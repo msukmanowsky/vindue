@@ -81,6 +81,26 @@ and the TS default are pinned to the same shape from both directions — see
 - Update `README.md` (and website docs, once present) for user-visible changes.
 - No comments-only churn; match the existing code style.
 
+## Versioning & releases
+
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html); while `0.x`, minor
+versions may carry breaking changes and patches are fixes.
+
+Releases are cut from `main` by tag:
+
+1. A **version-bump commit** sets `X.Y.Z` in `src-tauri/tauri.conf.json`,
+   `package.json`, and `src-tauri/Cargo.toml`, and stamps the `CHANGELOG.md`
+   heading.
+2. **Release candidates first**: tag `vX.Y.Z-rc.N` — feature-frozen builds for
+   validating install/first-run quality. CI auto-flags hyphenated tags as
+   GitHub **pre-releases** (orange badge, excluded from "latest"). Fixes
+   during the rc period ship as `rc.N+1`.
+3. CI builds a universal dmg, attaches `SHA256SUMS.txt` + a Sigstore build
+   attestation, and opens a **draft** release.
+4. The maintainer smoke-tests the dmg (clean machine, Gatekeeper, first run),
+   then publishes. The final `vX.Y.Z` repeats the flow without the hyphen —
+   a full release that becomes "latest".
+
 ## Security
 
 Please do **not** open public issues for security problems — see
