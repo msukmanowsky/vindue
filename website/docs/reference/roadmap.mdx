@@ -1,0 +1,55 @@
+---
+sidebar_position: 4
+title: Roadmap
+description: Where Vindue is going — and what it deliberately won't do.
+---
+
+# Roadmap
+
+Rough direction, not promises — no dates, because dates become lies. Items
+move up when they annoy enough people (or me). The source of truth for
+in-flight work is the
+[issue tracker](https://github.com/msukmanowsky/vindue/issues).
+
+## Shipped in 0.1
+
+Drag-to-tile panels on every display, keyboard shortcuts with display memory,
+schema-validated settings, display identification that survives replug, the
+loopback HTTP API, and the MCP server.
+
+## Next up
+
+- **Homebrew cask** — `brew install vindue` (own tap first, homebrew-cask
+  once we have traction)
+- **Auto-updates** — Tauri updater plugin, so new releases land without a
+  manual download
+- **Global named shortcuts** — fire a saved region *anytime*, without opening
+  the panel first (the most-requested Divvy parity gap)
+- **Live resize preview** — show the destination rect while dragging, beyond
+  the target outline
+
+## Later
+
+- **Windows port** — the interaction model translates; the native layer
+  doesn't. Win32 window management, display identity, and the strip-window
+  highlight all need a rewrite, so this is a real project, not a config flag
+- **More MCP surface** — driven by what AI users actually ask for (window
+  layout snapshots/restore is a likely candidate)
+
+## Non-goals
+
+Things Vindue deliberately won't become:
+
+- **No accounts, cloud, or telemetry** — everything stays local, forever
+- **No auth token on the control API** — the loopback bind + Host allowlist +
+  browser-request rejection *are* the model; anything that can already run
+  code as you can already do all of this (see the
+  [security model](../automation/http-api#security-model--no-auth-by-design))
+- **No tiling-WM ambitions** — Vindue places the window you mean, when you
+  ask; it won't auto-arrange your desktop behind your back
+
+## Have an idea?
+
+Open a [feature request](https://github.com/msukmanowsky/vindue/issues/new/choose) —
+the template asks which surface it touches (panel, shortcuts, API, MCP…),
+which is exactly how this page is organized.

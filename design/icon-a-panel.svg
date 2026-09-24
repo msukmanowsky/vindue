@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#26262f"/>
+      <stop offset="1" stop-color="#131318"/>
+    </linearGradient>
+    <linearGradient id="sel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5b93ff"/>
+      <stop offset="1" stop-color="#2f6fe8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <circle cx="400" cy="400" r="330" fill="#3478f6" opacity="0.07"/>
+  <!-- dark panes: 3x3 grid, 212px, 32 gap, origin 162 -->
+  <g fill="#2b2b35" stroke="#3a3a48" stroke-width="2">
+    <rect x="650" y="162" width="212" height="212" rx="36"/>
+    <rect x="650" y="406" width="212" height="212" rx="36"/>
+    <rect x="162" y="650" width="212" height="212" rx="36"/>
+    <rect x="406" y="650" width="212" height="212" rx="36"/>
+    <rect x="650" y="650" width="212" height="212" rx="36"/>
+  </g>
+  <!-- selection: top-left 2x2, the signature drag -->
+  <g fill="url(#sel)" stroke="#82a9ff" stroke-width="3">
+    <rect x="162" y="162" width="212" height="212" rx="36"/>
+    <rect x="406" y="162" width="212" height="212" rx="36"/>
+    <rect x="162" y="406" width="212" height="212" rx="36"/>
+    <rect x="406" y="406" width="212" height="212" rx="36"/>
+  </g>
+</svg>

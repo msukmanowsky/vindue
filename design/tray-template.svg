@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Menu-bar template glyph: silhouette of the icon-d tricolor composition.
+       Template images render from the alpha channel only (black here; macOS
+       inverts for dark menu bars). Gaps widened vs the app icon so the three
+       panes stay distinct at ~18px. -->
+  <g fill="#000000">
+    <rect x="40" y="40" width="206" height="432" rx="21"/>
+    <rect x="266" y="40" width="206" height="206" rx="21"/>
+    <rect x="266" y="266" width="206" height="206" rx="21"/>
+  </g>
+</svg>

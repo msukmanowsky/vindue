@@ -1,0 +1,75 @@
+---
+sidebar_position: 1
+title: Tile windows with Claude
+description: Hook Vindue up to Claude Code as an MCP server and arrange windows from natural language.
+---
+
+# Tile windows with Claude
+
+Vindue ships an [MCP server](../mcp), so Claude can see your displays, move
+windows, and manage your shortcuts. Here's the whole setup.
+
+## 1. Start Vindue
+
+Make sure Vindue is running (menu-bar icon visible) and you've granted the
+**Accessibility** permission — moving windows needs it. Check with:
+
+```sh
+curl -s 127.0.0.1:47725/api/v1/state | jq .axTrusted
+```
+
+## 2. Register the MCP server
+
+**Claude Code:**
+
+```sh
+claude mcp add --transport http vindue http://127.0.0.1:47725/mcp
+claude mcp list   # vindue should show as connected
+```
+
+**Claude Desktop / Cursor:** add an HTTP MCP server with URL
+`http://127.0.0.1:47725/mcp` (copyable from Vindue → Settings → API).
+
+## 3. Talk to it
+
+In Claude Code, plain language works:
+
+> Put my frontmost window on the left half of the screen.
+
+Claude calls `get_state` (learning your monitors, grid, and AX status), then
+`tile_window` with `{"preset": "left_half"}`. Done — the window moves.
+
+Multi-monitor requests use Vindue's canonical display labels:
+
+> Move Safari to the top-right quadrant of "DELL U2720Q (right)".
+
+Claude can also set you up:
+
+> Create a layout: 1 = left half of my Dell, 2 = right half of my Dell,
+> 3 = full screen on the MacBook.
+
+That's three `set_shortcut` calls — afterwards the bindings live in your
+config and work from the panel like any hand-made shortcut.
+
+And it can tune Vindue itself:
+
+> Make my grid 8 columns by 6 rows with a 16px gap between windows.
+
+(`set_grid` — your saved shortcuts rescale proportionally.)
+
+## What Claude sees
+
+The server's `initialize` response includes usage instructions, so clients
+learn the workflow without docs: start with `get_state`, monitors are
+addressed by canonical label, grid cells are inclusive and 0-based. All 12
+tools are listed on the [MCP page](../mcp).
+
+## Troubleshooting
+
+- **`claude mcp list` shows failed** — is Vindue running? Is the port right
+  (`curl 127.0.0.1:47725/api/v1/state`)? Is `api.enabled` on in Settings?
+- **`tile_window` returns an Accessibility error** — grant the permission
+  (see [install](../../getting-started/intro#accessibility-permission-required));
+  read-only tools keep working without it
+- **Browser-based clients can't connect** — by design: the server rejects
+  browser-origin requests. Use a native MCP client.

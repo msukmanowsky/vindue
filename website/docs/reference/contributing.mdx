@@ -1,0 +1,54 @@
+---
+sidebar_position: 3
+title: Contributing
+description: Dev setup, tests, and the fixture-parity rule.
+---
+
+# Contributing
+
+Contributions of any size are welcome. The full guide lives in
+[CONTRIBUTING.md](https://github.com/msukmanowsky/vindue/blob/main/CONTRIBUTING.md) —
+the essentials:
+
+## Dev setup
+
+```sh
+git clone https://github.com/msukmanowsky/vindue.git
+cd vindue
+npm install
+npm run tauri dev
+```
+
+Requires macOS, Node.js 20+, Rust (stable), Xcode command line tools, and the
+Accessibility grant for the dev binary (the app will point you at the exact
+file).
+
+## Tests — run them all
+
+```sh
+npm test                                  # vitest (TypeScript suites)
+(cd src-tauri && cargo test)              # Rust suites
+npm run build                             # tsc + vite type check
+(cd src-tauri && cargo fmt --check && cargo clippy -- -D warnings)
+```
+
+CI gates on all of the above.
+
+## The fixture-parity rule
+
+Pure logic (validation, rescaling, cell→rect math, presets, monitor labels,
+monitor resolution) is pinned by **golden-vector fixtures** in
+`fixtures/*.json`, consumed by **both** test suites. Change pure logic →
+update the fixtures once, both languages must pass against the same vectors.
+Add pure logic → add cases to the fixture file, not just one language's
+tests. Never fix a failing fixture test by editing only one side.
+
+## Security reports
+
+Private only — GitHub Security tab → "Report a vulnerability". See
+[SECURITY.md](https://github.com/msukmanowsky/vindue/blob/main/SECURITY.md).
+
+## License
+
+By contributing, you agree your contributions will be licensed under the
+[MIT License](https://github.com/msukmanowsky/vindue/blob/main/LICENSE).

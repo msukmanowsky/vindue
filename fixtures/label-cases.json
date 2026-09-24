@@ -1,0 +1,71 @@
+{
+  "comment": "Golden vectors for monitorLabels parity: TS (src/shortcuts.ts) and Rust monitor_labels (src-tauri/src/config.rs). Friendly names via model-number map; identical names get positional suffixes ordered by (x, y).",
+  "cases": [
+    {
+      "name": "distinct friendly names",
+      "monitors": [
+        { "name": "Monitor #1", "x": 0, "y": 0 },
+        { "name": "Monitor #2", "x": 2560, "y": 0 }
+      ],
+      "names": { "1": "Built-in Retina Display", "2": "DELL U2720Q" },
+      "expect": ["Built-in Retina Display", "DELL U2720Q"]
+    },
+    {
+      "name": "twins get left/right by position, not enumeration order",
+      "monitors": [
+        { "name": "Monitor #1", "x": 2560, "y": 0 },
+        { "name": "Monitor #2", "x": 0, "y": 0 }
+      ],
+      "names": { "1": "DELL U2720Q", "2": "DELL U2720Q" },
+      "expect": ["DELL U2720Q (right)", "DELL U2720Q (left)"]
+    },
+    {
+      "name": "triplets get left/middle/right",
+      "monitors": [
+        { "name": "Monitor #1", "x": 1920, "y": 0 },
+        { "name": "Monitor #2", "x": 0, "y": 0 },
+        { "name": "Monitor #3", "x": 3840, "y": 0 }
+      ],
+      "names": { "1": "LG 27UK850", "2": "LG 27UK850", "3": "LG 27UK850" },
+      "expect": ["LG 27UK850 (middle)", "LG 27UK850 (left)", "LG 27UK850 (right)"]
+    },
+    {
+      "name": "four identical get left-to-right #N",
+      "monitors": [
+        { "name": "Monitor #1", "x": 200, "y": 0 },
+        { "name": "Monitor #2", "x": 0, "y": 0 },
+        { "name": "Monitor #3", "x": 300, "y": 0 },
+        { "name": "Monitor #4", "x": 100, "y": 0 }
+      ],
+      "names": { "1": "A", "2": "A", "3": "A", "4": "A" },
+      "expect": ["A (left-to-right #3)", "A (left-to-right #1)", "A (left-to-right #4)", "A (left-to-right #2)"]
+    },
+    {
+      "name": "same x tie-break: y decides",
+      "monitors": [
+        { "name": "Monitor #1", "x": 0, "y": 500 },
+        { "name": "Monitor #2", "x": 0, "y": 0 }
+      ],
+      "names": { "1": "Same", "2": "Same" },
+      "expect": ["Same (right)", "Same (left)"]
+    },
+    {
+      "name": "unknown model number falls back to the raw tao name",
+      "monitors": [{ "name": "Monitor #9", "x": 0, "y": 0 }],
+      "names": {},
+      "expect": ["Monitor #9"]
+    },
+    {
+      "name": "null name falls back to Display N",
+      "monitors": [{ "name": null, "x": 0, "y": 0 }],
+      "names": {},
+      "expect": ["Display 1"]
+    },
+    {
+      "name": "non-tao names pass through",
+      "monitors": [{ "name": "Some Other Name", "x": 0, "y": 0 }],
+      "names": {},
+      "expect": ["Some Other Name"]
+    }
+  ]
+}

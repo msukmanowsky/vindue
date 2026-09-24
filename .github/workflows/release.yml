@@ -1,0 +1,83 @@
+name: Release
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+    permissions:
+      contents: write # create the draft release + upload assets
+      id-token: write # OIDC token for the Sigstore signing certificate
+      attestations: write # store build provenance (requires a PUBLIC repo — we flip public before tagging)
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@6bed0761d98439e5a578e2877258200ad565ba87 # stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - uses: swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci
+
+      - uses: tauri-apps/tauri-action@84b9d35b5fc46c1e45415bdb6144030364f7ebc5 # v0
+        id: tauri
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Uncomment + set repo secrets once the Apple Developer ID certificate
+          # and notarytool credentials are provisioned:
+          # APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          # APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          # APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          # APPLE_ID: ${{ secrets.APPLE_ID }}
+          # APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
+          # APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "Vindue __VERSION__"
+          releaseBody: |
+            See [CHANGELOG.md](https://github.com/msukmanowsky/vindue/blob/main/CHANGELOG.md) for what changed.
+
+            **Verify this download** (details: [Verifying a download](https://github.com/msukmanowsky/vindue#verifying-a-download)):
+            - `shasum -a 256 <dmg>` must match the `SHA256SUMS.txt` asset below
+            - `gh attestation verify <dmg> --owner msukmanowsky` proves it was built from this tag's commit by this repo's CI
+          releaseDraft: true
+          prerelease: false
+          args: --target universal-apple-darwin
+
+      # Supply-chain transparency, part 1: checksums. Uploaded as a release
+      # asset so anyone can hash-match their download.
+      - name: Publish SHA256SUMS
+        id: sums
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          dmg="$(jq -r '.[] | select(endswith(".dmg"))' <<< '${{ steps.tauri.outputs.artifactPaths }}' 2>/dev/null | head -1)"
+          if [ -z "$dmg" ]; then
+            dmg="$(ls src-tauri/target/*/release/bundle/dmg/*.dmg 2>/dev/null | head -1)"
+          fi
+          test -n "$dmg" || { echo "::error::no dmg found to checksum"; exit 1; }
+          cd "$(dirname "$dmg")"
+          shasum -a 256 "$(basename "$dmg")" > SHA256SUMS.txt
+          cat SHA256SUMS.txt
+          gh release upload "${{ github.ref_name }}" SHA256SUMS.txt --clobber
+          echo "dmg=$dmg" >> "$GITHUB_OUTPUT"
+
+      # Supply-chain transparency, part 2: SLSA Build L3 provenance. Sigstore-
+      # signed statement tying the dmg's digest to the exact commit + this
+      # repo's GitHub Actions identity, recorded in a public transparency log.
+      # GitHub links it to the matching release asset automatically; users run:
+      #   gh attestation verify Vindue_<ver>_universal.dmg --owner msukmanowsky
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2
+        with:
+          subject-path: ${{ steps.sums.outputs.dmg }}

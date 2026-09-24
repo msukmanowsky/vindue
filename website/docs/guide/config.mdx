@@ -1,0 +1,68 @@
+---
+sidebar_position: 4
+title: Config reference
+description: The config.json file — location, shape, and every field.
+---
+
+# Config reference
+
+`~/Library/Application Support/com.oddinteractive.vindue/config.json`
+
+Edit it in the [Settings window](./settings) — all changes apply immediately
+(the panel live-reloads on save; hotkey changes re-register live too) — or by
+hand. Top-level keys mirror the Settings UI sections 1:1. Defaults are no
+hotkey, zero gaps/margins, no shortcuts, API on:
+
+```json
+{
+  "version": 1,
+  "grid": {
+    "rows": 6,
+    "cols": 6,
+    "windowGap": { "width": 0, "height": 0 },
+    "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 }
+  },
+  "keybindings": { "openPanel": "" },
+  "shortcuts": {
+    "assignment": "pinned",
+    "keys": {
+      "Digit1": {
+        "monitor": null,
+        "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 }
+      },
+      "Backquote": {
+        "monitor": { "name": "DELL U2720Q (left)", "index": 1 },
+        "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 5 }
+      }
+    }
+  },
+  "api": { "port": 47725, "enabled": true }
+}
+```
+
+## Fields
+
+| Field | Meaning |
+|---|---|
+| `grid.rows` / `grid.cols` | Grid dimensions, 1–12 |
+| `grid.windowGap` | Gap between adjacent placed windows (each inset by half) |
+| `grid.screenMargins` | Screen-edge insets (0–300, physical px) |
+| `keybindings.openPanel` | Global panel toggle, parsed by tauri-plugin-global-shortcut (e.g. `Cmd+Shift+Space`, `Ctrl+Alt+D`); `""` = none — the tray icon always opens the panel |
+| `shortcuts.assignment` | What a panel-mode assignment (key + drag) saves: `"pinned"` (default) binds it to the display it was created on; `"relative"` saves no monitor, so it follows the panel at apply time |
+| `shortcuts.keys` | Key code → `{ monitor, selection }`. `monitor: null` = relative to the panel's display; otherwise `{ name, index }` of the display it was assigned on (`name` = [canonical label](./multi-monitor#canonical-labels)). Easiest created via assignment mode in the panel |
+| `api.port` | Loopback server port, 1024–65535 (default 47725) |
+| `api.enabled` | Serve the [HTTP API + MCP](../automation/http-api) at all |
+
+Key codes are `KeyboardEvent.code` values (physical positions): `Digit1`,
+`Backquote`, `Minus`, `Semicolon`, … — layout-independent.
+
+## Versioning
+
+`version` is the schema revision. On a version/shape mismatch the config is
+reseeded to defaults — while the app is pre-1.0 there are no migrations; the
+seed function marks the seam where real migrations go for shipped releases.
+
+The Rust seed/validation core and the TypeScript defaults are pinned to this
+exact shape from both directions by tests — see the fixture-parity rule in
+[CONTRIBUTING.md](https://github.com/msukmanowsky/vindue/blob/main/CONTRIBUTING.md)
+before changing anything here.

@@ -1,0 +1,47 @@
+{
+  "comment": "Golden vectors for selectionToRect parity: TS (src/geometry.ts) and Rust selection_to_rect (src-tauri/src/config.rs). Physical pixels; integer-exact values only, so both suites can compare with a tight epsilon.",
+  "cases": [
+    {
+      "name": "full grid with margins and gap",
+      "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 10, "height": 10 }, "screenMargins": { "top": 10, "right": 10, "bottom": 10, "left": 10 } },
+      "area": { "x": 0, "y": 0, "width": 2560, "height": 1600 },
+      "sel": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 5 },
+      "expect": { "x": 15, "y": 15, "width": 2530, "height": 1570 }
+    },
+    {
+      "name": "zero margins right half is an exact split",
+      "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+      "area": { "x": 0, "y": 0, "width": 2560, "height": 1600 },
+      "sel": { "startRow": 0, "endRow": 5, "startCol": 3, "endCol": 5 },
+      "expect": { "x": 1280, "y": 0, "width": 1280, "height": 1600 }
+    },
+    {
+      "name": "secondary display origin above-right",
+      "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 10, "height": 10 }, "screenMargins": { "top": 10, "right": 10, "bottom": 10, "left": 10 } },
+      "area": { "x": 2560, "y": -500, "width": 1920, "height": 1080 },
+      "sel": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 5 },
+      "expect": { "x": 2575, "y": -485, "width": 1890, "height": 1050 }
+    },
+    {
+      "name": "oversized vertical margins clamp to zero height",
+      "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 900, "right": 0, "bottom": 900, "left": 0 } },
+      "area": { "x": 0, "y": 0, "width": 2560, "height": 1600 },
+      "sel": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 5 },
+      "expect": { "x": 0, "y": 900, "width": 2560, "height": 0 }
+    },
+    {
+      "name": "single cell 4x4 no spacing",
+      "grid": { "rows": 4, "cols": 4, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+      "area": { "x": 0, "y": 0, "width": 2560, "height": 1600 },
+      "sel": { "startRow": 0, "endRow": 0, "startCol": 0, "endCol": 0 },
+      "expect": { "x": 0, "y": 0, "width": 640, "height": 400 }
+    },
+    {
+      "name": "single cell 4x4 with gap inset",
+      "grid": { "rows": 4, "cols": 4, "windowGap": { "width": 8, "height": 8 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+      "area": { "x": 0, "y": 0, "width": 2560, "height": 1600 },
+      "sel": { "startRow": 0, "endRow": 0, "startCol": 0, "endCol": 0 },
+      "expect": { "x": 4, "y": 4, "width": 632, "height": 392 }
+    }
+  ]
+}

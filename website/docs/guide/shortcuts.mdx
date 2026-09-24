@@ -1,0 +1,54 @@
+---
+sidebar_position: 1
+title: Shortcuts
+description: Bind grid regions to keys — pinned to a display or following the panel.
+---
+
+# Shortcuts
+
+Any assignable key can save a grid region: digits `0-9` plus
+`` ` `` `-` `=` `[` `]` `\` `;` `'` `,` `.` `/` — physical key codes, so they
+work regardless of keyboard layout (`` ` `` and `~` are the same key).
+
+## Assign
+
+While the panels are open:
+
+1. Press an **unassigned key** (or **Option+key** to reassign)
+2. The footer shows *assigning* with the key's color chip
+3. Your **next drag is saved to that key and applied** — one motion: the
+   window moves immediately and the panel closes
+
+By default assignments are **pinned** to the display whose panel you're on:
+click display B's panel, press the key, drag — the shortcut belongs to B.
+Settings → Shortcuts can switch assignments to **relative** (no display
+binding; the shortcut follows the panel at apply time, like Divvy).
+
+## Apply
+
+Press an assigned key while the panels are open → the target window snaps to
+the saved region **on its saved display**, even if that's not where the panel
+is. Example setup: `1`/`2` = left/right halves of display A, `3` = left half
+of display B.
+
+## Reading the grid
+
+- Each key gets a unique high-contrast color
+- Keys belonging to the current display show a **colored chip** on their
+  region's anchor cell — **hover a chip** to see its region outlined in a thin
+  dashed line
+- Keys bound to other displays are listed in the footer
+  (*other displays: `3` DELL U2720Q …*) and still fire
+
+## Managing
+
+Shortcuts persist in `config.json` and are editable in
+[Settings → Shortcuts](./settings): monitor dropdown, drag-in-mini-grid region
+editor, and add-by-pressing-a-key. They can also be created and removed
+through the [HTTP API](../automation/http-api) and
+[MCP tools](../automation/mcp) — handy for letting an AI set up your layout.
+
+:::note Scope
+Shortcuts are *local* — they fire while the panels are open. Divvy-style
+*global* named shortcuts (fire anytime, no panel) are on the roadmap.
+:::

@@ -1,0 +1,113 @@
+---
+sidebar_position: 1
+title: Troubleshooting
+description: Accessibility grants, Gatekeeper, ports, logs, and config resets.
+---
+
+# Troubleshooting
+
+## macOS won't open Vindue ("unidentified developer")
+
+Until notarized releases ship: right-click the app → **Open** → **Open**, or
+System Settings → Privacy & Security → "Open Anyway". This appears once per
+release.
+
+## Windows don't move (Accessibility permission)
+
+Moving other apps' windows requires the Accessibility grant:
+
+1. Open the panel (tray left-click) — the banner names the **exact file**
+   that needs the grant and offers **Grant access…**
+2. In System Settings → Privacy & Security → Accessibility: remove stale
+   Vindue entries ("−"), add the shown file ("+", ⌘⇧G to paste the path), and
+   toggle it on
+3. Re-open the panel — the grant is detected automatically
+
+Check status from the shell:
+
+```sh
+curl -s 127.0.0.1:47725/api/v1/state | jq .axTrusted
+```
+
+**Dev builds:** ad-hoc signing produces a new code-signing identity on every
+rebuild, so old entries go permanently stale — toggling an old entry does
+nothing. Remove and re-add. Signed releases have a stable identity; the grant
+survives updates.
+
+### "AXError -25211" / kAXErrorAPIDisabled
+
+An apply that fails with
+
+> Vindue doesn't have Accessibility access (AXError -25211, kAXErrorAPIDisabled)
+
+means the grant is missing or **went stale mid-session** — most often because a
+rebuild replaced the running binary with a new code-signing identity, or
+System Settings was toggled while Vindue was open. This is *not* the target
+app's fault (`-25211` is about Vindue's own access, distinct from the
+"app may not expose Accessibility windows" error, which is the target's).
+
+The panel now recovers on its own: a failed apply drops the cached grant state,
+re-shows the banner, and resumes auto-detection — so re-granting fixes it
+without re-activating the panel. For a clean slate, quit Vindue, remove the
+stale entry, re-add the current binary, and relaunch.
+
+
+## Some windows refuse to resize
+
+Fullscreen-Space apps and apps that don't expose Accessibility windows can't
+be resized — the same limitation Divvy has. Un-fullscreen the window first.
+
+## macOS's own tiling gets in the way
+
+Hovering a window's green button activates macOS's native tiling; its overlay
+is drawn by a system process (WindowManager) that can briefly own the front of
+the screen. Vindue looks past such system windows to your real frontmost app,
+so the two coexist: dismiss the macOS tiling UI (Esc), focus the window you
+want, and activate Vindue normally. If you ever see *"doesn't expose an
+Accessibility window interface"*, the current target is system UI or an app
+without real windows — refocus a normal window and try again.
+
+## The API/MCP endpoint doesn't respond
+
+- Is Vindue running? (menu-bar icon)
+- Is the server enabled? Settings → API → enable toggle + port (default
+  **47725**)
+- Test: `curl -s 127.0.0.1:47725/api/v1/state`
+- From a **web page** it will always fail (403) — that's the security guard
+  working as designed; use curl/scripts/native MCP clients
+- Changing the port rebinds the server immediately — update your scripts and
+  MCP client URL
+
+## A shortcut lands on the wrong display
+
+Monitor bindings resolve through a fallback chain (label → bare name → saved
+index → current display) — the panel footer flags when a fallback kicked in.
+Rearranging displays in System Settings re-labels them; re-save the shortcut
+on the right panel, or switch it to *Relative (follows panel)*. Details:
+[display identification](../guide/multi-monitor#display-identification).
+
+## Reset config
+
+Quit Vindue, then delete the config file:
+
+```sh
+rm ~/Library/Application\ Support/com.oddinteractive.vindue/config.json
+```
+
+Relaunch — defaults are reseeded (6×6 grid, no hotkey, no shortcuts, API on
+port 47725).
+
+## Logs
+
+```sh
+tail -f ~/Library/Logs/com.oddinteractive.vindue/Vindue.log
+```
+
+Include the relevant lines when
+[reporting a bug](https://github.com/msukmanowsky/vindue/issues/new/choose) —
+plus your macOS version, display setup, and whether Accessibility is granted.
+
+## Still stuck?
+
+[Open an issue](https://github.com/msukmanowsky/vindue/issues/new/choose) —
+the bug template asks for exactly the right details.

@@ -1,0 +1,59 @@
+{
+  "name": "vindue",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "Grid window tiling for macOS — drivable by scripts and AI",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msukmanowsky/vindue.git"
+  },
+  "author": "Mike Sukmanowsky",
+  "homepage": "https://msukmanowsky.github.io/vindue/",
+  "bugs": {
+    "url": "https://github.com/msukmanowsky/vindue/issues"
+  },
+  "keywords": [
+    "macos",
+    "window-manager",
+    "tiling",
+    "tauri",
+    "rust",
+    "mcp",
+    "model-context-protocol",
+    "productivity"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "tauri": "tauri",
+    "test:rust": "cd src-tauri && cargo test",
+    "check:rust": "cd src-tauri && cargo fmt --check && cargo clippy -- -D warnings && cargo test",
+    "website:build": "npm --prefix website run build",
+    "verify": "npm run build && npm test && npm run check:rust",
+    "verify:all": "npm run verify && npm run website:build"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2",
+    "@tauri-apps/plugin-log": "^2.9.1",
+    "@tauri-apps/plugin-opener": "^2.5.5",
+    "@tauri-apps/plugin-store": "^2.4.4",
+    "lucide-react": "^1.46.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "yup": "^1.7.1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2",
+    "@types/node": "^22.20.3",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^6.0.2",
+    "typescript": "~6.0.3",
+    "vite": "^8.0.16",
+    "vitest": "^5.0.1"
+  }
+}

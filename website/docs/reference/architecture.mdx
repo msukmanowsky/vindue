@@ -1,0 +1,66 @@
+---
+sidebar_position: 2
+title: Architecture
+description: What's Tauri framework, what's custom native glue, and the fixture-parity testing model.
+---
+
+# Architecture
+
+Tauri 2 + React/TypeScript front end, Rust back end. Everything except one
+module is Tauri framework or official plugins:
+
+| Piece | How |
+|---|---|
+| Tray icon, menus, click events | Tauri core `TrayIconBuilder` |
+| Global hotkey (+ live re-register) | official `tauri-plugin-global-shortcut` |
+| Config persistence | official `tauri-plugin-store` + Rust seed/validate core |
+| Open config.json in the default editor | official `tauri-plugin-opener`, capability-scoped to `$APPDATA/config.json` |
+| Single-instance guard | official `tauri-plugin-single-instance` — second launch focuses Settings or opens the panel |
+| Target app icon in the panel header | `NSRunningApplication.icon` → 64×64 bitmap → PNG (`ax.rs`), raw-byte IPC, cached per pid |
+| Panel/settings/strip windows (frameless, always-on-top, lazy creation) | Tauri window APIs |
+| Monitor info for geometry + display-bound shortcuts | `@tauri-apps/api/window` `currentMonitor()` / `availableMonitors()` |
+| Friendly display names (*DELL U2720Q*, not `Monitor #41042`) | `NSScreen.localizedName` via objc2 (`ax.rs`), keyed by CGDisplayModelNumber |
+| One panel per display, aspect-matched grids | dynamic windows + `panel_placement` (Rust) |
+| Live outline tracking + click-outside dismissal | watcher thread polling `CGWindowList` (runs only while panels are visible) |
+| App picker (running apps + icons) | `NSWorkspace.runningApplications` + per-pid `CGWindowList` scan (`ax.rs`) |
+| Key focus on hotkey activation | `NSApplication.activate` + `makeFirstResponder` (`ax.rs`) — tao's show only unhides |
+| Grid UI, drag selection, chips, settings form/JSON | React (one bundle, routed by window label) |
+| Selection → rect math | pure TS (`src/geometry.ts`) + Rust port (`config.rs`), fixture-pinned |
+| Shortcut keys/colors/monitor resolution | pure TS (`src/shortcuts.ts`) + Rust port, fixture-pinned |
+| Config schema enforcement | Yup (`src/configSchema.ts`) + hand-rolled Rust twin (`config.rs`), fixture-pinned |
+| Loopback control API (REST `/api/v1`) | `axum` bound to 127.0.0.1 (`api.rs`) — Host allowlist + browser-request guard, test-pinned |
+| MCP endpoint (`/mcp`) | official MCP Rust SDK (`rmcp`) streamable-HTTP service nested in the same axum router (`mcp.rs`) |
+| **Custom native glue** | `src-tauri/src/ax.rs`: AX permission check, frontmost-window snapshot + bounds via `CGWindowListCopyWindowInfo`, resize/move via `AXUIElement`, localized display names + app icons via AppKit |
+
+## Ordering detail
+
+The target window is snapshotted in Rust **before** the panel is
+shown/focused (`toggle_panel` in `lib.rs`) — otherwise the panel itself would
+become the "frontmost window".
+
+## Highlight without private APIs
+
+The selection highlight is four opaque strip windows (top/bottom/left/right
+of the selection), not a custom-drawn overlay — no `macOSPrivateApi`, all
+public window APIs.
+
+## Fixture-parity testing
+
+The TS and Rust implementations of the shared logic (validation, rescale,
+rect math, presets, monitor labels/resolution) are pinned to each other by
+golden vectors in `fixtures/*.json` — **both suites consume every case**
+(vitest via `src/fixtures.test.ts`, cargo test via `include_str!`), so drift
+on either side fails the build. Plus: Rust API-guard tests (Origin/Host
+rejection), TS schema/store/hotkey suites. CI runs everything on every PR.
+
+## Known limitations (deliberate)
+
+- macOS only — the Windows platform module is a future phase
+- Shortcuts are *local* (panel must be open); global named shortcuts are a
+  later phase
+- No live resize-preview rect beyond the target outline
+- Fullscreen-Space apps and apps without AX windows can't be resized (same as
+  Divvy)
+- Mixed-DPI multi-monitor works per-monitor but isn't torture-tested
+- The control API has no auth token — loopback bind + Host allowlist +
+  browser-request rejection are the whole model

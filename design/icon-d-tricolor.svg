@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#26262f"/>
+      <stop offset="1" stop-color="#131318"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5b93ff"/>
+      <stop offset="1" stop-color="#2f6fe8"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff6b5e"/>
+      <stop offset="1" stop-color="#e04438"/>
+    </linearGradient>
+    <linearGradient id="yellow" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffd257"/>
+      <stop offset="1" stop-color="#f0a92c"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <circle cx="330" cy="512" r="330" fill="#3478f6" opacity="0.07"/>
+  <!-- 4x4 grid (164px cells, 28 gaps, origin 142), tiled by three windows:
+       left vertical half, upper right, lower right -->
+  <rect x="142" y="142" width="356" height="740" rx="36" fill="url(#blue)" stroke="#82a9ff" stroke-width="3"/>
+  <rect x="526" y="142" width="356" height="356" rx="36" fill="url(#red)" stroke="#ffa698" stroke-width="3"/>
+  <rect x="526" y="526" width="356" height="356" rx="36" fill="url(#yellow)" stroke="#ffe08a" stroke-width="3"/>
+</svg>

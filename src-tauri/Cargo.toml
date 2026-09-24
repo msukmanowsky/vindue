@@ -1,0 +1,64 @@
+[package]
+name = "vindue"
+version = "0.1.0"
+description = "Grid window tiling for macOS — drivable by scripts and AI"
+authors = ["Mike Sukmanowsky"]
+license = "MIT"
+repository = "https://github.com/msukmanowsky/vindue"
+homepage = "https://msukmanowsky.github.io/vindue/"
+readme = "../README.md"
+keywords = ["macos", "window-manager", "tiling", "tauri", "mcp"]
+edition = "2021"
+
+[lib]
+name = "vindue_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["tray-icon", "image-png"] }
+# Intercepts second launches (Finder icon, `open`) and focuses the running
+# instance instead of spawning a twin that would fight over the API port.
+tauri-plugin-single-instance = "2"
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-store = "2"
+tauri-plugin-opener = "2"
+tauri-plugin-log = "2"
+log = "0.4"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+# JSON Schema derives for MCP tool parameters (same 1.x line rmcp uses).
+schemars = "1"
+# HTTP control API + MCP endpoint (see src/api.rs, src/mcp.rs). axum is the
+# tokio-team web framework; rmcp is the official MCP Rust SDK
+# (modelcontextprotocol/rust-sdk) — its streamable-HTTP server transport is
+# axum-based and nests into the same router.
+axum = "0.8"
+rmcp = { version = "3", features = ["server", "transport-streamable-http-server"] }
+tokio = { version = "1", features = ["net", "rt", "macros", "sync", "time"] }
+
+[dev-dependencies]
+tower = { version = "0.5", features = ["util"] }
+http-body-util = "0.1"
+
+[target.'cfg(target_os = "macos")'.dependencies]
+core-foundation = "0.10"
+# In the tree via tao — used for CGDisplayModelNumber, the same number tao
+# embeds in its "Monitor #<n>" placeholder names.
+core-graphics = "0.25"
+# Already in the dependency tree via tauri/wry — direct use adds no compile cost.
+# Only used for NSScreen.localizedName (human display names); tao exposes only
+# "Monitor #<CGDirectDisplayID>".
+objc2 = "0.6"
+objc2-foundation = { version = "0.3", features = ["NSString", "NSDictionary", "NSValue", "NSThread", "NSGeometry", "NSData"] }
+objc2-app-kit = { version = "0.3", features = ["NSScreen", "NSRunningApplication", "NSImage", "NSBitmapImageRep", "NSImageRep", "NSGraphicsContext", "NSGraphics", "NSApplication", "NSWindow", "NSView", "NSResponder", "NSWorkspace"] }
+
+# Read the optimization guideline for more details: https://tauri.app/concept/size/#cargo-configuration
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = 3
+panic = "abort"
+strip = true

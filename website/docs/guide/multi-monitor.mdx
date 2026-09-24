@@ -1,0 +1,67 @@
+---
+sidebar_position: 2
+title: Multi-monitor
+description: Panels on every display, and how Vindue identifies displays across replug and reboot.
+---
+
+# Multi-monitor
+
+## Panels everywhere
+
+Panels open on **every display at once**, each centered and sized so its grid
+mirrors that display's aspect ratio (Divvy shows a single panel, on the focused
+window's display). Drag on any panel to place the target on that display; key
+focus lands on the target's display, and clicking another panel moves focus
+there.
+
+Monitor-bound [shortcuts](./shortcuts) go beyond Divvy, whose shortcuts are
+always relative to the current screen: press `3` and the window flies to its
+saved display even while you're looking at another one.
+
+## Display identification
+
+macOS gives apps **no stable hardware identity for displays**, so Vindue saves
+`{name, index}` per shortcut and resolves best-effort. Why not an ID:
+
+- `CGDirectDisplayID` is assigned per *connection* — it changes on
+  replug/reboot/dock cycles, so it can't persist in a config file
+- The closest thing to a hardware ID is the display's **EDID** data via
+  IORegistry (what BetterDisplay/`displayplacer` read): manufacturer + product
+  code + serial. But the serial is frequently zero or duplicated — two
+  identical monitors typically report *identical* EDID — so it's stable-ish
+  yet still not unique-ish, and it costs custom IOKit code
+- Displays have no MAC address; that's a network-interface concept
+- The **localized name** (`NSScreen.localizedName` — what System Settings
+  shows, e.g. *DELL U2720Q*) is stable across replug/reboot and
+  human-meaningful. It's keyed by `CGDisplayModelNumber` — the number tao
+  embeds in its `Monitor #<n>` placeholder names
+
+Every identifier bottoms out at the same failure mode: **two identical
+displays are ambiguous to any API**. Vindue's answer is positional labeling.
+
+### Canonical labels
+
+When several connected displays share a name, they're suffixed by their
+position in the arrangement macOS persists:
+
+- `DELL U2720Q (left)` / `DELL U2720Q (right)`
+- `(middle)` for triplets
+- `(left-to-right #N)` for four or more
+- Vertical stacks tiebreak on y
+
+The labels appear in the Settings dropdown and are recomputed identically at
+apply time, so "left" means whatever display currently occupies the left
+slot — matching what you see in System Settings. Rearranging displays
+re-labels them; that's the most durable signal macOS exposes.
+
+### Resolution chain
+
+At apply time, a saved monitor resolves through:
+
+1. **Label match** (including positional suffixes)
+2. **Bare-name match** — a suffixed reference whose twin is unplugged
+3. **Raw tao name** — legacy entries
+4. **Saved index** — with the panel footer flagging the fallback
+5. **Current display** — last resort, footer says so
+
+Settings also offers *Relative (follows panel)* per shortcut, like Divvy.

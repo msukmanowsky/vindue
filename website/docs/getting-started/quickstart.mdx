@@ -1,0 +1,58 @@
+---
+sidebar_position: 2
+title: Quickstart
+description: The one interaction loop — open the panel, drag across the grid, release.
+---
+
+# Quickstart
+
+Vindue has exactly one interaction loop. Learn it in 30 seconds.
+
+## 1. Focus any window
+
+Whatever window is frontmost — on any display — is the **target**. Vindue
+snapshots it *before* the panel opens, so the panel itself never steals
+target status.
+
+## 2. Open the panels
+
+**Left-click the menu-bar icon**, or press your global hotkey if you've
+recorded one in Settings (there is none by default).
+
+A grid panel appears **on every display at once** — centered, sized to that
+display's aspect ratio — with the panel on the target's display focused. Each
+panel header shows the target app's **icon + name**, and the target window is
+**outlined in blue** so you can see exactly what will move.
+
+## 3. Drag across the grid
+
+Drag over cells; the selection highlights live. **Release** → the target
+window is moved/resized to that region (work area, window gaps, and screen
+margins applied). The panels auto-dismiss after applying.
+
+- **Esc** dismisses without applying
+- Clicking any other app's window dismisses (the panels are true modals)
+- Move or resize the target while open — the outline follows
+- To retarget without dismissing: click the app name in the header and pick
+  from the running-apps list (with icons)
+
+## Presets without dragging
+
+Want halves and quadrants in one keystroke? Bind them as
+[shortcuts](../guide/shortcuts): while the panels are open, press an
+unassigned key → your next drag is *saved* to that key **and applied in the
+same motion** (the window moves immediately). Afterwards, pressing that key
+(with the panels open) snaps the target to the saved region instantly.
+
+Nine region presets — `full`, `left_half`, `right_half`, `top_half`,
+`bottom_half`, `top_left`, `top_right`, `bottom_left`, `bottom_right` — are
+also available through the [HTTP API](../automation/http-api) and
+[MCP tools](../automation/mcp).
+
+## Make it yours
+
+- **Settings…** (tray right-click, or the ⚙ button in a panel): grid size
+  (1–12 × 1–12), window gaps, screen margins, the global hotkey, shortcut
+  management, and the API toggle
+- [Record a global hotkey](../guide/settings) so you never touch the mouse
+- [Add Vindue to your AI](../automation/mcp) and tile windows from Claude

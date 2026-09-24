@@ -1,0 +1,47 @@
+{
+  "comment": "Golden vectors for rescaleSelection parity: TS (src/geometry.ts) and Rust rescale_selection (src-tauri/src/config.rs). Proportional remap with exclusive end edge, flooring at one cell.",
+  "cases": [
+    {
+      "name": "left half 6x6 -> 8x8",
+      "sel": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 },
+      "from": { "rows": 6, "cols": 6 },
+      "to": { "rows": 8, "cols": 8 },
+      "expect": { "startRow": 0, "endRow": 7, "startCol": 0, "endCol": 3 }
+    },
+    {
+      "name": "full 6x6 -> 1x12",
+      "sel": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 5 },
+      "from": { "rows": 6, "cols": 6 },
+      "to": { "rows": 1, "cols": 12 },
+      "expect": { "startRow": 0, "endRow": 0, "startCol": 0, "endCol": 11 }
+    },
+    {
+      "name": "top-left quadrant 6x6 -> 5x7",
+      "sel": { "startRow": 0, "endRow": 2, "startCol": 0, "endCol": 2 },
+      "from": { "rows": 6, "cols": 6 },
+      "to": { "rows": 5, "cols": 7 },
+      "expect": { "startRow": 0, "endRow": 2, "startCol": 0, "endCol": 3 }
+    },
+    {
+      "name": "right half 8x8 -> 3x3",
+      "sel": { "startRow": 0, "endRow": 7, "startCol": 4, "endCol": 7 },
+      "from": { "rows": 8, "cols": 8 },
+      "to": { "rows": 3, "cols": 3 },
+      "expect": { "startRow": 0, "endRow": 2, "startCol": 2, "endCol": 2 }
+    },
+    {
+      "name": "single cell degenerates, never zero-width",
+      "sel": { "startRow": 5, "endRow": 5, "startCol": 5, "endCol": 5 },
+      "from": { "rows": 6, "cols": 6 },
+      "to": { "rows": 1, "cols": 1 },
+      "expect": { "startRow": 0, "endRow": 0, "startCol": 0, "endCol": 0 }
+    },
+    {
+      "name": "same grid is identity",
+      "sel": { "startRow": 2, "endRow": 3, "startCol": 1, "endCol": 4 },
+      "from": { "rows": 6, "cols": 6 },
+      "to": { "rows": 6, "cols": 6 },
+      "expect": { "startRow": 2, "endRow": 3, "startCol": 1, "endCol": 4 }
+    }
+  ]
+}

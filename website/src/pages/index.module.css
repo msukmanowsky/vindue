@@ -1,0 +1,39 @@
+.heroBanner {
+  padding: 5rem 0 3rem;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 1.5rem;
+}
+
+.heroNote {
+  margin-top: 1.5rem;
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.automation {
+  padding: 3rem 0;
+}
+
+.automationTitle {
+  text-align: center;
+}
+
+.automationBlurb {
+  text-align: center;
+  max-width: 46rem;
+  margin: 0 auto 2rem;
+}
+
+@media screen and (max-width: 996px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+}

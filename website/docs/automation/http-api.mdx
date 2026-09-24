@@ -1,0 +1,72 @@
+---
+sidebar_position: 1
+title: HTTP API
+description: The loopback REST control API — endpoints, curl examples, and the security model.
+---
+
+# HTTP API
+
+With `api.enabled` (the default), Vindue serves a control API on
+`http://127.0.0.1:<api.port>` (default **47725**) — two faces on one server:
+REST for scripts and humans, [MCP](./mcp) for AI clients.
+
+## Security model — no auth, by design
+
+The server binds to **loopback only**, allowlists the `Host` header
+(`127.0.0.1`/`localhost` — DNS-rebinding defense), and **rejects any request
+carrying `Origin` or `Sec-Fetch-Site` headers**: browsers always attach them
+(even on simple GETs), while curl/scripts/MCP clients never do — so a web page
+you visit cannot drive your windows.
+
+Anything that can already run code as your user can use this API; it grants no
+new capability. (Pinned by tests in `src-tauri/src/api.rs`.)
+
+## Endpoints
+
+JSON in/out; errors are `400` + `{ "error": "…" }`.
+
+| Endpoint | What |
+|---|---|
+| `GET /api/v1/state` | Everything: AX trust, frontmost target, monitors (canonical labels), full config |
+| `POST /api/v1/tile` | The money shot — `{ preset }` or `{ cells }`, optional `monitor` (label/index/"current"), optional `app` (pid or name; default frontmost) |
+| `GET /api/v1/config` | Full config |
+| `PUT /api/v1/config/grid` | Merge-patch `rows`/`cols`/`windowGap`/`screenMargins` (saved shortcuts rescale proportionally) |
+| `PUT /api/v1/config/keybindings` | Merge-patch `{ "openPanel": "Cmd+Alt+S" }` (`""` = clear) |
+| `PUT /api/v1/config/shortcuts/assignment` | `{ "assignment": "pinned" \| "relative" }` (bare string also accepted) |
+| `PUT /api/v1/config/api` | Merge-patch `{ port, enabled }` — rebinds the server itself |
+| `GET /api/v1/shortcuts` | Assignment mode + all key bindings |
+| `PUT /api/v1/shortcuts/{key}` | Create/update: `{ monitor: label \| null, selection: { startRow, endRow, startCol, endCol } }` |
+| `DELETE /api/v1/shortcuts/{key}` | Remove a binding (`{ "deleted": bool }`) |
+| `GET /api/v1/monitors` | Displays with canonical labels, positions, work areas, scale factors |
+| `GET /api/v1/apps` | Running apps: `{ pid, name }` — usable as `tile`'s `app` |
+| `GET /api/v1/target` | Current frontmost window snapshot |
+
+## Examples
+
+```sh
+curl -s 127.0.0.1:47725/api/v1/state | jq .
+curl -s -X POST 127.0.0.1:47725/api/v1/tile -d '{"preset":"left_half"}'
+curl -s -X POST 127.0.0.1:47725/api/v1/tile \
+  -d '{"preset":"top_right","app":"Safari","monitor":"DELL U2720Q (right)"}'
+curl -s -X POST 127.0.0.1:47725/api/v1/tile \
+  -d '{"cells":{"startRow":0,"endRow":2,"startCol":1,"endCol":4}}'
+curl -s -X PUT 127.0.0.1:47725/api/v1/shortcuts/Digit2 \
+  -d '{"monitor":null,"selection":{"startRow":0,"endRow":5,"startCol":3,"endCol":5}}'
+```
+
+## Presets & cells
+
+Presets: `full`, `left_half`, `right_half`, `top_half`, `bottom_half`,
+`top_left`, `top_right`, `bottom_left`, `bottom_right` — computed
+proportionally (`half(n) = max(1, round(n/2))`), so they work on any grid.
+
+`cells` are **inclusive 0-based** indices and must fit the current grid.
+
+:::note Accessibility
+Tiling needs the same Accessibility grant as the panel; the error message says
+so when it's missing.
+:::
+
+Ideas: shell aliases per layout, a "meeting mode" script that arranges
+browser + notes + terminal, Shortcuts.app automations, or
+[letting Claude do it](./tutorials/tile-with-claude).

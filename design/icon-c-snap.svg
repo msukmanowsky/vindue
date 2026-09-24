@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#26262f"/>
+      <stop offset="1" stop-color="#131318"/>
+    </linearGradient>
+    <linearGradient id="sel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5b93ff"/>
+      <stop offset="1" stop-color="#2f6fe8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <circle cx="360" cy="512" r="300" fill="#3478f6" opacity="0.07"/>
+  <!-- the result of a snap: left half taken, right split in two -->
+  <rect x="172" y="182" width="320" height="660" rx="44" fill="url(#sel)" stroke="#82a9ff" stroke-width="3"/>
+  <g fill="#2b2b35" stroke="#3a3a48" stroke-width="2">
+    <rect x="532" y="182" width="320" height="318" rx="44"/>
+    <rect x="532" y="524" width="320" height="318" rx="44"/>
+  </g>
+</svg>

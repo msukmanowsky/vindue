@@ -1,0 +1,286 @@
+{
+  "comment": "Golden vectors for config validation parity: TS validateConfig (src/configSchema.ts, Yup) and Rust validate_config (src-tauri/src/config.rs) must agree on every case. Consumed by src/fixtures.test.ts and the config.rs fixture tests.",
+  "cases": [
+    {
+      "name": "valid minimal",
+      "valid": true,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "valid full",
+      "valid": true,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 10, "height": 20 }, "screenMargins": { "top": 1, "right": 2, "bottom": 3, "left": 4 } },
+        "keybindings": { "openPanel": "Cmd+Shift+Space" },
+        "shortcuts": {
+          "assignment": "relative",
+          "keys": {
+            "Digit1": { "monitor": null, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } },
+            "Backquote": { "monitor": { "name": "DELL U2720Q (left)", "index": 1 }, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 5 } },
+            "Semicolon": { "monitor": { "name": null, "index": 0 }, "selection": { "startRow": 2, "endRow": 3, "startCol": 1, "endCol": 4 } }
+          }
+        },
+        "api": { "port": 47725, "enabled": false }
+      }
+    },
+    {
+      "name": "valid grid bounds 12x12",
+      "valid": true,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 12, "cols": 12, "windowGap": { "width": 300, "height": 300 }, "screenMargins": { "top": 300, "right": 300, "bottom": 300, "left": 300 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "valid api port lower bound",
+      "valid": true,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 1024, "enabled": true }
+      }
+    },
+    {
+      "name": "valid api port upper bound",
+      "valid": true,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 65535, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid unknown top-level key",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 47725, "enabled": true },
+        "bogus": 1
+      }
+    },
+    {
+      "name": "invalid legacy flat hotkey",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "hotkey": "",
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid missing keybindings",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid missing version",
+      "valid": false,
+      "config": {
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid version string",
+      "valid": false,
+      "config": {
+        "version": "1",
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid grid rows 13",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 13, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid grid cols 0",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 0, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid window gap above 300",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 301, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid negative screen margin",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": -1, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid assignment value",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "bogus", "keys": {} },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid legacy single-digit key",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": { "1": { "monitor": null, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } } } },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid unassignable key code",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": { "KeyQ": { "monitor": null, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } } } },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid bare selection def",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": { "Digit1": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } } },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid unknown monitor-ref key",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": { "Digit1": { "monitor": { "name": "X", "index": 0, "id": "abc" }, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } } } },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid negative monitor index",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": { "Digit1": { "monitor": { "name": null, "index": -1 }, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } } } },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid selection outside grid",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": { "Digit1": { "monitor": null, "selection": { "startRow": 0, "endRow": 7, "startCol": 0, "endCol": 2 } } } },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid reversed selection",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": { "Digit1": { "monitor": null, "selection": { "startRow": 5, "endRow": 0, "startCol": 0, "endCol": 0 } } } },
+        "api": { "port": 47725, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid api port below range",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 1023, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid api port above range",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} },
+        "api": { "port": 65536, "enabled": true }
+      }
+    },
+    {
+      "name": "invalid missing api section",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
+        "keybindings": { "openPanel": "" },
+        "shortcuts": { "assignment": "pinned", "keys": {} }
+      }
+    }
+  ]
+}

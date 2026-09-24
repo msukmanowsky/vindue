@@ -1,0 +1,57 @@
+---
+sidebar_position: 2
+title: MCP (AI control)
+description: Register Vindue with Claude Code, Claude Desktop, or any MCP client — 12 tools for window management.
+---
+
+# MCP (AI control)
+
+The same loopback server speaks the
+[Model Context Protocol](https://modelcontextprotocol.io) at **`/mcp`**
+(streamable HTTP, via the official MCP Rust SDK) — so Claude Code, Claude
+Desktop, or any MCP client can drive Vindue as a tool.
+
+## Register
+
+**Claude Code:**
+
+```sh
+claude mcp add --transport http vindue http://127.0.0.1:47725/mcp
+```
+
+**Claude Desktop / Cursor / other clients:** add an HTTP MCP server pointing
+at `http://127.0.0.1:47725/mcp` (Settings → MCP servers; the URL is copyable
+from Vindue's Settings → API section).
+
+Then just ask: *"Put Safari on the left half of my right monitor."*
+
+## Tools
+
+Settings + tiling; no UI control by design.
+
+| Tool | What |
+|---|---|
+| `get_state` | AX trust, frontmost window, monitors + labels, full config — call first |
+| `tile_window` | preset or explicit cells; optional `monitor` (label/index/"current") and `app` (pid/name) |
+| `list_shortcuts` / `set_shortcut` / `delete_shortcut` | manage key → grid-region bindings |
+| `get_config` / `set_grid` / `set_margins` | read/tune the grid (shortcuts rescale on resize) |
+| `set_hotkey` / `set_shortcut_assignment` | global open-panel hotkey; pinned-vs-relative default |
+| `list_monitors` / `list_apps` | canonical display labels; running apps for `tile_window` |
+
+## Design notes
+
+- **One implementation, two protocols** — every tool delegates to the exact
+  same handler functions as the [REST API](./http-api)
+- **Self-describing** — the server advertises usage instructions in its
+  `initialize` response, so clients learn the workflow (check `get_state`,
+  use canonical labels, cells are inclusive) without docs
+- **Same guard as REST** — rmcp enforces its own loopback Host allowlist on
+  every request; browsers can't reach it
+
+## Requirements
+
+- Vindue running with `api.enabled` (the default)
+- The Accessibility grant for `tile_window` to move windows (read-only tools
+  work without it)
+
+Walkthrough: [Tile windows with Claude](./tutorials/tile-with-claude).

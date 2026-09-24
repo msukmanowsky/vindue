@@ -1,0 +1,93 @@
+---
+sidebar_position: 2
+title: Scripting Vindue with curl
+description: Shell aliases, layout scripts, and automation recipes against the loopback REST API.
+---
+
+# Scripting Vindue with curl
+
+The [HTTP API](../http-api) is plain JSON over loopback — anything that can
+make an HTTP request can drive your windows. No tokens, no config: if it can
+run as you, it works.
+
+## Sanity check
+
+```sh
+curl -s 127.0.0.1:47725/api/v1/state | jq '{axTrusted, monitors: [.monitors[].label]}'
+```
+
+## One-liners
+
+```sh
+# Frontmost window → left half
+curl -s -X POST 127.0.0.1:47725/api/v1/tile -d '{"preset":"left_half"}'
+
+# Safari → top-right of a specific display (canonical label)
+curl -s -X POST 127.0.0.1:47725/api/v1/tile \
+  -d '{"preset":"top_right","app":"Safari","monitor":"DELL U2720Q (right)"}'
+
+# Explicit cells: rows 0-2, cols 1-4 (inclusive, 0-based)
+curl -s -X POST 127.0.0.1:47725/api/v1/tile \
+  -d '{"cells":{"startRow":0,"endRow":2,"startCol":1,"endCol":4}}'
+```
+
+## Shell aliases
+
+```sh
+alias vl='curl -s -X POST 127.0.0.1:47725/api/v1/tile -d "{\"preset\":\"left_half\"}" > /dev/null'
+alias vr='curl -s -X POST 127.0.0.1:47725/api/v1/tile -d "{\"preset\":\"right_half\"}" > /dev/null'
+alias vf='curl -s -X POST 127.0.0.1:47725/api/v1/tile -d "{\"preset\":\"full\"}" > /dev/null'
+```
+
+## A "meeting mode" layout script
+
+Arrange browser + notes + terminal in one keystroke (bind it via
+[Shortcuts.app, Raycast, skhd, Karabiner…](https://github.com/koekeishiya/skhd)):
+
+```sh
+#!/bin/sh
+API=127.0.0.1:47725/api/v1
+curl -s -X POST $API/tile -d '{"preset":"left_half","app":"Safari"}'
+curl -s -X POST $API/tile -d '{"preset":"top_right","app":"Notes"}'
+curl -s -X POST $API/tile -d '{"preset":"bottom_right","app":"Terminal"}'
+```
+
+App names come from `GET /api/v1/apps` (`{ pid, name }`); `app` accepts a name
+or pid.
+
+## Provision shortcuts from a script
+
+```sh
+# Digit2 → right half of whatever display (relative)
+curl -s -X PUT 127.0.0.1:47725/api/v1/shortcuts/Digit2 \
+  -d '{"monitor":null,"selection":{"startRow":0,"endRow":5,"startCol":3,"endCol":5}}'
+
+# Pin Digit3 to a specific display by canonical label
+curl -s -X PUT 127.0.0.1:47725/api/v1/shortcuts/Digit3 \
+  -d '{"monitor":"DELL U2720Q (left)","selection":{"startRow":0,"endRow":5,"startCol":0,"endCol":2}}'
+
+curl -s -X DELETE 127.0.0.1:47725/api/v1/shortcuts/Digit2   # {"deleted":true}
+```
+
+Selections are in grid cells (default grid is 6×6), inclusive and 0-based.
+Prefer named regions? Generate cells from presets: `left_half` of 6×6 is
+`{startRow:0,endRow:5,startCol:0,endCol:2}`.
+
+## Tuning config
+
+```sh
+# 8×6 grid, 16px gaps (saved shortcuts rescale proportionally)
+curl -s -X PUT 127.0.0.1:47725/api/v1/config/grid \
+  -d '{"rows":6,"cols":8,"windowGap":{"width":16,"height":16}}'
+
+# Register the global open-panel hotkey
+curl -s -X PUT 127.0.0.1:47725/api/v1/config/keybindings \
+  -d '{"openPanel":"Cmd+Alt+V"}'
+```
+
+## Error handling
+
+Failures return `400` with `{"error":"…"}` — e.g. unknown preset, selection
+outside the grid, no monitor matching that label (the message lists available
+labels), or a missing Accessibility grant. Parse `.error` and you'll always
+know why.

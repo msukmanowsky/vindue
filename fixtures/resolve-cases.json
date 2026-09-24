@@ -1,0 +1,92 @@
+{
+  "comment": "Golden vectors for resolveMonitorIndex parity: TS (src/shortcuts.ts) and Rust resolve_monitor_index (src-tauri/src/config.rs). Chain: label -> bare name (twin unplugged) -> raw tao name (legacy) -> saved index (fellBack) -> fallback (fellBack). ref: null = relative; { name: null, index } = index-only ref.",
+  "cases": [
+    {
+      "name": "null ref resolves to fallback",
+      "ref": null,
+      "monitors": [
+        { "name": "Monitor #1", "x": 2560, "y": 0 },
+        { "name": "Monitor #2", "x": 0, "y": 0 }
+      ],
+      "names": { "1": "DELL U2720Q", "2": "DELL U2720Q" },
+      "fallback": 1,
+      "expect": { "index": 1, "fellBack": false }
+    },
+    {
+      "name": "exact label match wins",
+      "ref": { "name": "DELL U2720Q (left)", "index": 0 },
+      "monitors": [
+        { "name": "Monitor #1", "x": 2560, "y": 0 },
+        { "name": "Monitor #2", "x": 0, "y": 0 }
+      ],
+      "names": { "1": "DELL U2720Q", "2": "DELL U2720Q" },
+      "fallback": 0,
+      "expect": { "index": 1, "fellBack": false }
+    },
+    {
+      "name": "unique friendly name matches its label",
+      "ref": { "name": "DELL U2720Q", "index": 0 },
+      "monitors": [{ "name": "Monitor #1", "x": 0, "y": 0 }],
+      "names": { "1": "DELL U2720Q" },
+      "fallback": 0,
+      "expect": { "index": 0, "fellBack": false }
+    },
+    {
+      "name": "suffixed ref with twin unplugged matches the bare label",
+      "ref": { "name": "DELL U2720Q (left)", "index": 0 },
+      "monitors": [{ "name": "Monitor #1", "x": 0, "y": 0 }],
+      "names": { "1": "DELL U2720Q" },
+      "fallback": 0,
+      "expect": { "index": 0, "fellBack": false }
+    },
+    {
+      "name": "legacy raw tao name still resolves",
+      "ref": { "name": "Monitor #2", "index": 0 },
+      "monitors": [{ "name": "Monitor #2", "x": 0, "y": 0 }],
+      "names": { "2": "DELL U2720Q" },
+      "fallback": 0,
+      "expect": { "index": 0, "fellBack": false }
+    },
+    {
+      "name": "unknown name falls back to saved index, flagged",
+      "ref": { "name": "Gone Display", "index": 1 },
+      "monitors": [
+        { "name": "Monitor #1", "x": 2560, "y": 0 },
+        { "name": "Monitor #2", "x": 0, "y": 0 }
+      ],
+      "names": { "1": "DELL U2720Q", "2": "DELL U2720Q" },
+      "fallback": 0,
+      "expect": { "index": 1, "fellBack": true }
+    },
+    {
+      "name": "unknown name and out-of-range index falls back, flagged",
+      "ref": { "name": "Gone Display", "index": 5 },
+      "monitors": [
+        { "name": "Monitor #1", "x": 2560, "y": 0 },
+        { "name": "Monitor #2", "x": 0, "y": 0 }
+      ],
+      "names": { "1": "DELL U2720Q", "2": "DELL U2720Q" },
+      "fallback": 0,
+      "expect": { "index": 0, "fellBack": true }
+    },
+    {
+      "name": "index-only ref in range",
+      "ref": { "name": null, "index": 1 },
+      "monitors": [
+        { "name": "Monitor #1", "x": 2560, "y": 0 },
+        { "name": "Monitor #2", "x": 0, "y": 0 }
+      ],
+      "names": {},
+      "fallback": 0,
+      "expect": { "index": 1, "fellBack": false }
+    },
+    {
+      "name": "index-only ref out of range falls back, flagged",
+      "ref": { "name": null, "index": 9 },
+      "monitors": [{ "name": "Monitor #1", "x": 0, "y": 0 }],
+      "names": {},
+      "fallback": 0,
+      "expect": { "index": 0, "fellBack": true }
+    }
+  ]
+}

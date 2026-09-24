@@ -1,0 +1,18 @@
+{
+  "comment": "Golden vectors for presetSelection parity: TS (src/geometry.ts) and Rust preset_selection (src-tauri/src/config.rs). half(n) = max(1, round(n/2)); unknown preset -> null/None.",
+  "cases": [
+    { "name": "full 6x6", "preset": "full", "grid": { "rows": 6, "cols": 6 }, "expect": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 5 } },
+    { "name": "left_half 6x6", "preset": "left_half", "grid": { "rows": 6, "cols": 6 }, "expect": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } },
+    { "name": "right_half 6x6", "preset": "right_half", "grid": { "rows": 6, "cols": 6 }, "expect": { "startRow": 0, "endRow": 5, "startCol": 3, "endCol": 5 } },
+    { "name": "top_half 6x6", "preset": "top_half", "grid": { "rows": 6, "cols": 6 }, "expect": { "startRow": 0, "endRow": 2, "startCol": 0, "endCol": 5 } },
+    { "name": "bottom_half 6x6", "preset": "bottom_half", "grid": { "rows": 6, "cols": 6 }, "expect": { "startRow": 3, "endRow": 5, "startCol": 0, "endCol": 5 } },
+    { "name": "top_left 6x6", "preset": "top_left", "grid": { "rows": 6, "cols": 6 }, "expect": { "startRow": 0, "endRow": 2, "startCol": 0, "endCol": 2 } },
+    { "name": "top_right 6x6", "preset": "top_right", "grid": { "rows": 6, "cols": 6 }, "expect": { "startRow": 0, "endRow": 2, "startCol": 3, "endCol": 5 } },
+    { "name": "bottom_left 6x6", "preset": "bottom_left", "grid": { "rows": 6, "cols": 6 }, "expect": { "startRow": 3, "endRow": 5, "startCol": 0, "endCol": 2 } },
+    { "name": "bottom_right 6x6", "preset": "bottom_right", "grid": { "rows": 6, "cols": 6 }, "expect": { "startRow": 3, "endRow": 5, "startCol": 3, "endCol": 5 } },
+    { "name": "left_half odd 7x7", "preset": "left_half", "grid": { "rows": 7, "cols": 7 }, "expect": { "startRow": 0, "endRow": 6, "startCol": 0, "endCol": 3 } },
+    { "name": "right_half odd 7x7", "preset": "right_half", "grid": { "rows": 7, "cols": 7 }, "expect": { "startRow": 0, "endRow": 6, "startCol": 3, "endCol": 6 } },
+    { "name": "top_left 1x1", "preset": "top_left", "grid": { "rows": 1, "cols": 1 }, "expect": { "startRow": 0, "endRow": 0, "startCol": 0, "endCol": 0 } },
+    { "name": "unknown preset", "preset": "bogus", "grid": { "rows": 6, "cols": 6 }, "expect": null }
+  ]
+}

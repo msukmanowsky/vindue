@@ -1,0 +1,6 @@
+# Matches CI exactly (dtolnay/rust-toolchain@stable + fmt/clippy gates), so
+# `cargo fmt --check` and `cargo clippy -D warnings` mean the same thing
+# locally and in CI for every contributor using rustup.
+[toolchain]
+channel = "stable"
+components = ["clippy", "rustfmt"]

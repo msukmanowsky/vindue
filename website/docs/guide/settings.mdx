@@ -1,0 +1,60 @@
+---
+sidebar_position: 3
+title: Settings
+description: Form and JSON views of the same config — grid, keybindings, shortcuts, API.
+---
+
+# Settings
+
+Tray menu → **Settings…** (or the ⚙ button in a panel). Two views of the same
+`config.json`, switchable at the top-right.
+
+## Form view (default)
+
+Sectioned layout mirroring the config namespaces 1:1:
+
+- **Grid** — rows/columns (1–12), window gap, and screen margins as inputs
+  arranged around a monitor glyph
+- **Keybindings** — *Open Vindue*: a click-to-record hotkey field. Click,
+  press a modifier+key combination, done. The live hotkey is paused while
+  recording, so pressing the current combination records it instead of
+  firing; Esc cancels, blur exits. Opinionated admissibility rules reject
+  bare keys, Shift-only, Cmd/Alt+text-key, and macOS-reserved combos like
+  Cmd+Tab / Cmd+Space, with the reason shown on the spot. ✕ Clear removes the
+  hotkey entirely — the panel stays reachable from the menu bar, and **no
+  hotkey is the default**
+- **Shortcuts** — how panel assignments save: **Pinned** to the display
+  they're created on (the default) or **Relative**, following the panel at
+  apply time. Plus the shortcut list: color chip, monitor dropdown,
+  drag-in-mini-grid region editor, and add-by-pressing-a-key (new shortcuts
+  from Add are relative, pinnable per row)
+- **API** — enable toggle + port for the loopback control server, a copyable
+  MCP endpoint URL, and live listening status
+
+A successful **Save closes the window** — changes apply immediately; failures
+keep it open with inline errors.
+
+## JSON view
+
+Raw `config.json` for hand-editing. The file's location sits above the
+textarea, with **Copy** and **Open** (launches your default JSON editor).
+
+## Validation & live behavior
+
+Both views validate against the same schema on save: unknown keys,
+out-of-range margins, malformed shortcuts, or selections outside the grid →
+inline errors. Changing the hotkey re-registers it live, with best-effort
+conflict detection (macOS often doesn't report collisions — the same caveat
+Divvy documents).
+
+- **Rescaling**: resizing the grid **rescales saved shortcuts
+  proportionally** (best effort) — "left half" of 6×6 becomes the left half
+  of 8×8. JSON-view saves remap only selections that no longer fit, leaving
+  hand-adjusted ones alone
+- **No Reload button**: while the window is open, `config.json` is watched
+  (file-stamp poll) and external edits — by hand or by assigning shortcuts
+  from the panel — reload automatically. If you have unsaved edits when the
+  file changes, nothing is clobbered; you choose to overwrite (Save) or
+  discard
+
+See the [config reference](./config) for the full file shape.
