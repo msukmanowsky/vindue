@@ -129,7 +129,7 @@ const config: Config = {
           items: [
             {label: 'Getting started', to: '/docs/getting-started/intro'},
             {label: 'HTTP API', to: '/docs/reference/http-api'},
-            {label: 'MCP (AI control)', to: '/docs/reference/mcp'},
+            {label: 'MCP', to: '/docs/reference/mcp'},
             {label: 'Roadmap', to: '/docs/reference/roadmap'},
           ],
         },

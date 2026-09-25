@@ -92,7 +92,7 @@ shortcut CRUD, monitors, apps, target, and the server's own live OpenAPI spec
 → **[full reference](https://msukmanowsky.github.io/vindue/docs/reference/http-api)** ·
 [curl tutorial](https://msukmanowsky.github.io/vindue/docs/guide/scripting-with-curl)
 
-## MCP (AI control)
+## MCP
 
 The same server speaks the [Model Context Protocol](https://modelcontextprotocol.io)
 at `/mcp` (streamable HTTP, official MCP Rust SDK) — 12 tools for Claude Code,
