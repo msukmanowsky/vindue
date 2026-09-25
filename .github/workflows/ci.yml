@@ -129,7 +129,14 @@ jobs:
 
   deploy:
     needs: website
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    # `always()` + explicit results, same reason as `website`: on docs-only
+    # pushes `check` is skipped, and GitHub's implicit needs gate propagates
+    # that skipped ancestor down the chain even though `website` succeeded.
+    if: >
+      always() &&
+      needs.website.result == 'success' &&
+      github.ref == 'refs/heads/main' &&
+      github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
