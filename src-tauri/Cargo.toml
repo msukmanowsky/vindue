@@ -1,6 +1,12 @@
 [package]
 name = "vindue"
 version = "0.1.0"
+# The crate has a second bin (src/bin/docgen.rs, the API-docs generator).
+# Without default-run, universal-target release builds bundled docgen as the
+# app's main executable (CFBundleExecutable=docgen) — the v0.1.0 draft shipped
+# a dmg that couldn't launch. Both suites and CI call docgen via explicit
+# `cargo run --bin docgen`, so pinning the default here changes nothing else.
+default-run = "vindue"
 description = "Grid window tiling for macOS — drivable by scripts and AI"
 authors = ["Mike Sukmanowsky"]
 license = "MIT"
