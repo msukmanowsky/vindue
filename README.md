@@ -38,9 +38,9 @@ Panels are true modals: clicking away dismisses them, the outline follows the
 target live, and the header retargets another app without dismissing.
 
 - **Shortcuts** — save any drag to a key (color-coded, hover to preview);
-  pinned to a display or relative like Divvy → [docs](https://vindue.app/docs/guide/shortcuts)
+  pinned to a display or relative → [docs](https://vindue.app/docs/guide/shortcuts)
 - **Multi-monitor** — canonical display labels (positional suffixes for
-  identical twins); display-bound shortcuts go beyond Divvy → [docs](https://vindue.app/docs/guide/multi-monitor)
+  identical twins); display-bound shortcuts → [docs](https://vindue.app/docs/guide/multi-monitor)
 - **Settings** — schema-validated form + raw-JSON views of config.json; grid
   resizes rescale saved shortcuts proportionally → [docs](https://vindue.app/docs/guide/settings)
 - **Scriptable + AI-drivable** — loopback HTTP API and an MCP server on one
@@ -48,8 +48,7 @@ target live, and the header retargets another app without dismissing.
 
 ## Install
 
-Universal (Apple Silicon + Intel) dmgs on the **[Releases page](https://github.com/msukmanowsky/vindue/releases)** —
-v0.1.0 is in release-candidate stage; until it lands, [build from source](#run-from-source).
+Universal (Apple Silicon + Intel) dmgs on the **[Releases page](https://github.com/msukmanowsky/vindue/releases)**.
 
 Every release carries two independent proofs:
 
@@ -58,15 +57,20 @@ shasum -a 256 Vindue_x.y.z_universal.dmg                      # must match the S
 gh attestation verify Vindue_x.y.z_universal.dmg --owner msukmanowsky   # SLSA provenance: exact commit + this repo's CI identity
 ```
 
-Release builds are Apple Developer ID-signed + notarized (Gatekeeper-clean)
-and MIT-licensed — and you can always build the tagged commit yourself.
-Details: [Verifying your download](https://vindue.app/docs/getting-started/intro).
+Release builds are MIT-licensed — and you can always build the tagged commit
+yourself. They are **not** Apple Developer ID-signed yet: on first launch
+macOS will call the app unidentified — open System Settings → Privacy &
+Security → **Open Anyway** (once per release; signing + notarization are
+[on the roadmap](https://vindue.app/docs/reference/roadmap)).
+Details: [Verifying your download](https://vindue.app/docs/getting-started/quickstart).
 
 ### Accessibility permission
 
 Moving other apps' windows uses the macOS Accessibility API — grant it once
-(signed releases keep the grant across updates). The panel shows exactly which
-file needs the grant and detects it automatically: [setup guide](https://vindue.app/docs/getting-started/quickstart) ·
+per signing identity (while releases stay unsigned, each update gets a fresh
+ad-hoc identity, so expect a quick re-grant after updating). The panel shows
+exactly which file needs the grant and detects it automatically:
+[setup guide](https://vindue.app/docs/getting-started/quickstart) ·
 [troubleshooting](https://vindue.app/docs/reference/troubleshooting)
 (incl. `AXError -25211` and coexisting with macOS's own tiling).
 
@@ -140,9 +144,9 @@ drift on either side fails the build.
 ## Known limitations (deliberate)
 
 - macOS only — the Windows port is on the [roadmap](https://vindue.app/docs/reference/roadmap)
-- Shortcuts are *local* (panel must be open) — Divvy-style *global* named shortcuts are a later phase
+- Shortcuts are *local* (panel must be open) — *global* named shortcuts are a later phase
 - No live resize-preview rect beyond the target outline (deferred; no `macOSPrivateApi`, all public APIs)
-- Fullscreen-Space apps and apps that don't expose AX windows can't be resized (same as Divvy)
+- Fullscreen-Space apps and apps that don't expose AX windows can't be resized
 - Mixed-DPI multi-monitor: outline/placement are computed per-monitor but not yet torture-tested
 - Monitor identity is name+index — rearranging displays in System Settings can soften a binding to index-fallback (footer flags it)
 - The control API has no auth token — loopback bind + Host allowlist + browser-request rejection are the whole model (fine for local single-user; anything running as you can already do all of this)

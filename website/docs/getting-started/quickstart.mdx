@@ -24,6 +24,15 @@ Download **[Vindue_universal.dmg](https://github.com/msukmanowsky/vindue/release
 (Apple Silicon + Intel), open it, and drag Vindue into Applications. Launch it:
 a small icon appears in your menu bar and stays out of your way.
 
+:::note[First launch]
+
+Vindue isn't Apple Developer ID-signed yet, so macOS will flag it as an
+unidentified developer the first time you open each release: System Settings
+→ Privacy & Security → **Open Anyway**. The proofs below let you verify
+exactly what you downloaded before trusting it.
+
+:::
+
 :::note[Verifying your download]
 
 Every release ships two independent proofs: `shasum -a 256
@@ -50,10 +59,11 @@ activation Vindue shows a banner naming the exact file that needs the grant:
 The target outline and panel placement work *without* the grant — only
 applying regions needs it.
 
-:::tip[Dev builds]
+:::tip[Dev builds & unsigned releases]
 Ad-hoc signed builds get a new code-signing identity on every rebuild, so old
-Accessibility entries go stale — remove and re-add. Properly signed releases
-have a stable identity: grant once, persists across updates.
+Accessibility entries go stale — remove and re-add. That applies to every
+release until Developer ID signing + notarization land; afterwards, grant
+once and it persists across updates.
 :::
 
 ## 3. Tile your first window

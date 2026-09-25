@@ -47,7 +47,9 @@ jobs:
           releaseBody: |
             See [CHANGELOG.md](https://github.com/msukmanowsky/vindue/blob/main/CHANGELOG.md) for what changed.
 
-            **Verify this download** (details: [Verifying a download](https://github.com/msukmanowsky/vindue#verifying-a-download)):
+            **First launch:** builds are not Apple Developer ID-signed yet — macOS will call the app unidentified; open System Settings → Privacy & Security → **Open Anyway** (once per release). Signing + notarization are on the roadmap.
+
+            **Verify this download** (details: [Verifying your download](https://vindue.app/docs/getting-started/quickstart)):
             - `shasum -a 256 <dmg>` must match the `SHA256SUMS.txt` asset below
             - `gh attestation verify <dmg> --owner msukmanowsky` proves it was built from this tag's commit by this repo's CI
 

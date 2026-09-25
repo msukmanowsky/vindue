@@ -8,9 +8,12 @@ description: Accessibility grants, Gatekeeper, ports, logs, and config resets.
 
 ## macOS won't open Vindue ("unidentified developer")
 
-Until notarized releases ship: right-click the app → **Open** → **Open**, or
-System Settings → Privacy & Security → "Open Anyway". This appears once per
-release.
+Vindue isn't Developer ID-signed yet ([roadmap](./roadmap)), so on the first
+launch of each release macOS blocks it: open **System Settings → Privacy &
+Security**, scroll to the security section, and click **Open Anyway**. This
+appears once per release. (On older macOS, right-click the app → **Open** →
+**Open** works instead.) The checksum + attestation on the release page still
+let you verify exactly what you downloaded.
 
 ## Windows don't move (Accessibility permission)
 
