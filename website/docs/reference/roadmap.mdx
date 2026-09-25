@@ -34,23 +34,12 @@ loopback HTTP API, and the MCP server.
 
 ## Later
 
-- **Windows port** — the interaction model translates; the native layer
-  doesn't. Win32 window management, display identity, and the strip-window
-  highlight all need a rewrite, so this is a real project, not a config flag
+- **Windows & Linux ports** — the interaction model translates; the platform
+  layers don't, so both are real projects. We'll need testers on each —
+  interested? Say hi in the
+  [issue tracker](https://github.com/msukmanowsky/vindue/issues)
 - **More MCP surface** — driven by what AI users actually ask for (window
   layout snapshots/restore is a likely candidate)
-
-## Non-goals
-
-Things Vindue deliberately won't become:
-
-- **No accounts, cloud, or telemetry** — everything stays local, forever
-- **No auth token on the control API** — the loopback bind + Host allowlist +
-  browser-request rejection *are* the model; anything that can already run
-  code as you can already do all of this (see the
-  [security model](./http-api/index.mdx#security-model--no-auth-by-design))
-- **No tiling-WM ambitions** — Vindue places the window you mean, when you
-  ask; it won't auto-arrange your desktop behind your back
 
 ## Have an idea?
 
