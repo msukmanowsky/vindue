@@ -9,7 +9,7 @@ Deep dives: [README.md](README.md) (pitch, repo orientation, architecture table)
 (golden-vector contract).
 
 User-facing docs live in `website/docs/` (published at
-https://msukmanowsky.github.io/vindue/). The README deliberately points at the
+https://vindue.app). The README deliberately points at the
 site instead of duplicating it — user-visible changes update the site first.
 
 ## Commands

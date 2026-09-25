@@ -9,7 +9,7 @@
 [![CI](https://github.com/msukmanowsky/vindue/actions/workflows/ci.yml/badge.svg)](https://github.com/msukmanowsky/vindue/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[Docs](https://msukmanowsky.github.io/vindue/) · [Roadmap](https://msukmanowsky.github.io/vindue/docs/reference/roadmap) · [Changelog](CHANGELOG.md)
+[Docs](https://vindue.app/) · [Roadmap](https://vindue.app/docs/reference/roadmap) · [Changelog](CHANGELOG.md)
 
 </div>
 
@@ -30,11 +30,11 @@ Panels are true modals: clicking away dismisses them, the outline follows the
 target live, and the header retargets another app without dismissing.
 
 - **Shortcuts** — save any drag to a key (color-coded, hover to preview);
-  pinned to a display or relative like Divvy → [docs](https://msukmanowsky.github.io/vindue/docs/guide/shortcuts)
+  pinned to a display or relative like Divvy → [docs](https://vindue.app/docs/guide/shortcuts)
 - **Multi-monitor** — canonical display labels (positional suffixes for
-  identical twins); display-bound shortcuts go beyond Divvy → [docs](https://msukmanowsky.github.io/vindue/docs/guide/multi-monitor)
+  identical twins); display-bound shortcuts go beyond Divvy → [docs](https://vindue.app/docs/guide/multi-monitor)
 - **Settings** — schema-validated form + raw-JSON views of config.json; grid
-  resizes rescale saved shortcuts proportionally → [docs](https://msukmanowsky.github.io/vindue/docs/guide/settings)
+  resizes rescale saved shortcuts proportionally → [docs](https://vindue.app/docs/guide/settings)
 - **Scriptable + AI-drivable** — loopback HTTP API and an MCP server on one
   port (below)
 
@@ -52,14 +52,14 @@ gh attestation verify Vindue_x.y.z_universal.dmg --owner msukmanowsky   # SLSA p
 
 Release builds are Apple Developer ID-signed + notarized (Gatekeeper-clean)
 and MIT-licensed — and you can always build the tagged commit yourself.
-Details: [Verifying your download](https://msukmanowsky.github.io/vindue/docs/getting-started/intro).
+Details: [Verifying your download](https://vindue.app/docs/getting-started/intro).
 
 ### Accessibility permission
 
 Moving other apps' windows uses the macOS Accessibility API — grant it once
 (signed releases keep the grant across updates). The panel shows exactly which
-file needs the grant and detects it automatically: [setup guide](https://msukmanowsky.github.io/vindue/docs/getting-started/quickstart) ·
-[troubleshooting](https://msukmanowsky.github.io/vindue/docs/reference/troubleshooting)
+file needs the grant and detects it automatically: [setup guide](https://vindue.app/docs/getting-started/quickstart) ·
+[troubleshooting](https://vindue.app/docs/reference/troubleshooting)
 (incl. `AXError -25211` and coexisting with macOS's own tiling).
 
 ## Run from source
@@ -89,8 +89,8 @@ curl -s -X POST 127.0.0.1:47725/api/v1/tile -d '{"preset":"left_half"}'
 
 14 endpoints — state, tile (9 presets or explicit cells), config CRUD,
 shortcut CRUD, monitors, apps, target, and the server's own live OpenAPI spec
-→ **[full reference](https://msukmanowsky.github.io/vindue/docs/reference/http-api)** ·
-[curl tutorial](https://msukmanowsky.github.io/vindue/docs/guide/scripting-with-curl)
+→ **[full reference](https://vindue.app/docs/reference/http-api)** ·
+[curl tutorial](https://vindue.app/docs/guide/scripting-with-curl)
 
 ## MCP
 
@@ -106,8 +106,8 @@ response).
 claude mcp add --transport http vindue http://127.0.0.1:47725/mcp
 ```
 
-→ **[MCP reference](https://msukmanowsky.github.io/vindue/docs/reference/mcp)** ·
-[tutorial: tile with Claude](https://msukmanowsky.github.io/vindue/docs/guide/tile-with-claude)
+→ **[MCP reference](https://vindue.app/docs/reference/mcp)** ·
+[tutorial: tile with Claude](https://vindue.app/docs/guide/tile-with-claude)
 
 ## Commands
 
@@ -131,7 +131,7 @@ drift on either side fails the build.
 
 ## Known limitations (deliberate)
 
-- macOS only — the Windows port is on the [roadmap](https://msukmanowsky.github.io/vindue/docs/reference/roadmap)
+- macOS only — the Windows port is on the [roadmap](https://vindue.app/docs/reference/roadmap)
 - Shortcuts are *local* (panel must be open) — Divvy-style *global* named shortcuts are a later phase
 - No live resize-preview rect beyond the target outline (deferred; no `macOSPrivateApi`, all public APIs)
 - Fullscreen-Space apps and apps that don't expose AX windows can't be resized (same as Divvy)
@@ -154,7 +154,7 @@ design/       brand assets — icon masters + menu-bar glyph
 ## Architecture: framework vs custom
 
 Everything except one module is Tauri framework/plugins (expanded version:
-[architecture docs](https://msukmanowsky.github.io/vindue/docs/reference/architecture)):
+[architecture docs](https://vindue.app/docs/reference/architecture)):
 
 | Piece | How |
 |---|---|
@@ -184,4 +184,4 @@ the "frontmost window".
 
 ---
 
-[Website & docs](https://msukmanowsky.github.io/vindue/) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [Sponsor](https://github.com/sponsors/msukmanowsky)
+[Website & docs](https://vindue.app/) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md) · [Sponsor](https://github.com/sponsors/msukmanowsky)
