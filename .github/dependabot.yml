@@ -8,6 +8,12 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      # @types/node must track the CI/build runtime (Node 22) — a newer major
+      # would typecheck against APIs the runtime doesn't have. Revisit when
+      # the runtime itself moves.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
   - package-ecosystem: npm
     directory: /website
     schedule:

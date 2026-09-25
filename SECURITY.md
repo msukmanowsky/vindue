@@ -30,3 +30,16 @@ The webview config sets `"csp": null` deliberately: the panel windows load
 only locally bundled assets — no remote content, no user-supplied HTML — so a
 Content-Security-Policy adds little defense today. It should be revisited if
 the app ever loads remote content or renders untrusted input.
+
+### Docs-site build chain
+
+`npm audit` in `website/` reports advisories inside the
+`docusaurus-plugin-openapi-docs` dependency tree (its Postman code-sample
+stack transitively pins old `@faker-js/faker`, `js-yaml`, `yaml`, and `uuid`)
+and in Docusaurus dev-server tooling. These packages are build-time only:
+they run in CI from a locked, integrity-hashed lockfile (`npm ci`), never
+ship in the static site or the app, and only ever process this repo's own
+committed OpenAPI spec — untrusted input never reaches them. npm's only
+suggested "fix" is a breaking downgrade of the plugin, so we accept and track
+this until the plugin refreshes its Postman dependencies. The app-side tree
+(repo-root `npm audit`) is kept at zero.
