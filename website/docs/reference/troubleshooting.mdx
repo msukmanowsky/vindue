@@ -55,7 +55,7 @@ stale entry, re-add the current binary, and relaunch.
 ## Some windows refuse to resize
 
 Fullscreen-Space apps and apps that don't expose Accessibility windows can't
-be resized — the same limitation Divvy has. Un-fullscreen the window first.
+be resized. Un-fullscreen the window first.
 
 ## macOS's own tiling gets in the way
 
@@ -80,11 +80,11 @@ without real windows — refocus a normal window and try again.
 
 ## A shortcut lands on the wrong display
 
-Monitor bindings resolve through a fallback chain (label → bare name → saved
-index → current display) — the panel footer flags when a fallback kicked in.
-Rearranging displays in System Settings re-labels them; re-save the shortcut
-on the right panel, or switch it to *Relative (follows panel)*. Details:
-[display identification](../guide/multi-monitor#display-identification).
+If a shortcut's saved display isn't connected when it fires, Vindue picks the
+closest match and the panel footer tells you which one it used. Rearranging
+displays in System Settings re-labels them; re-save the shortcut on the right
+panel, or switch it to *Relative (follows panel)*. Details:
+[Multi-monitor](../guide/multi-monitor).
 
 ## Reset config
 

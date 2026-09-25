@@ -1,5 +1,5 @@
 ---
-sidebar_position: 4
+sidebar_position: 5
 title: Config reference
 description: The config.json file — location, shape, and every field.
 ---
@@ -8,7 +8,7 @@ description: The config.json file — location, shape, and every field.
 
 `~/Library/Application Support/com.oddinteractive.vindue/config.json`
 
-Edit it in the [Settings window](./settings) — all changes apply immediately
+Edit it in the [Settings window](../guide/settings) — all changes apply immediately
 (the panel live-reloads on save; hotkey changes re-register live too) — or by
 hand. Top-level keys mirror the Settings UI sections 1:1. Defaults are no
 hotkey, zero gaps/margins, no shortcuts, API on:
@@ -49,7 +49,7 @@ hotkey, zero gaps/margins, no shortcuts, API on:
 | `grid.screenMargins` | Screen-edge insets (0–300, physical px) |
 | `keybindings.openPanel` | Global panel toggle, parsed by tauri-plugin-global-shortcut (e.g. `Cmd+Shift+Space`, `Ctrl+Alt+D`); `""` = none — the tray icon always opens the panel |
 | `shortcuts.assignment` | What a panel-mode assignment (key + drag) saves: `"pinned"` (default) binds it to the display it was created on; `"relative"` saves no monitor, so it follows the panel at apply time |
-| `shortcuts.keys` | Key code → `{ monitor, selection }`. `monitor: null` = relative to the panel's display; otherwise `{ name, index }` of the display it was assigned on (`name` = [canonical label](./multi-monitor#canonical-labels)). Easiest created via assignment mode in the panel |
+| `shortcuts.keys` | Key code → `{ monitor, selection }`. `monitor: null` = relative to the panel's display; otherwise `{ name, index }` of the display it was assigned on (`name` = [canonical label](../guide/multi-monitor#naming-your-displays)). Easiest created via assignment mode in the panel |
 | `api.port` | Loopback server port, 1024–65535 (default 47725) |
 | `api.enabled` | Serve the [HTTP API + MCP](../reference/http-api/index.mdx) at all |
 

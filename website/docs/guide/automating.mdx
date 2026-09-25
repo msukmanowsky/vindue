@@ -1,0 +1,129 @@
+---
+sidebar_position: 4
+title: Automating Vindue
+description: Everything you can do by hand is also an API call — drive Vindue from scripts or from AI clients.
+---
+
+# Automating Vindue
+
+Every panel action is also an API call. Vindue runs a small server on your Mac
+only (`127.0.0.1`, port 47725) with two doors:
+
+- **REST API** — plain JSON over HTTP, for shell scripts, aliases, and
+  launcher tools (Raycast, Shortcuts.app, skhd…)
+- **MCP endpoint** — the [Model Context Protocol](https://modelcontextprotocol.io),
+  for AI clients like Claude Code, Claude Desktop, and Cursor
+
+No tokens, no accounts: anything running as you can use it, and nothing else
+can — requests from browsers are rejected by design. Toggle the server or
+change its port in Settings → API.
+
+## Let your AI drive
+
+### 1. Connect your client
+
+Vindue must be running (menu-bar icon visible) with the
+[Accessibility grant](../getting-started/quickstart#2-grant-accessibility-access-once)
+in place for moving windows.
+
+**Claude Code:**
+
+```sh
+claude mcp add --transport http vindue http://127.0.0.1:47725/mcp
+claude mcp list   # vindue should show as connected
+```
+
+**Claude Desktop / Cursor:** add an HTTP MCP server with URL
+`http://127.0.0.1:47725/mcp` (copyable from Vindue → Settings → API).
+
+### 2. Talk to it
+
+Plain language works:
+
+> Put my frontmost window on the left half of the screen.
+
+> Move Safari to the top-right quadrant of "DELL U2720Q (right)".
+
+> Create a layout: 1 = left half of my Dell, 2 = right half of my Dell,
+> 3 = full screen on the MacBook.
+
+> Make my grid 8 columns by 6 rows with a 16px gap between windows.
+
+Shortcuts your AI creates live in your config and work from the panel like
+any hand-made shortcut. The server teaches clients its workflow on connect,
+and the full tool list is on the [MCP reference page](../reference/mcp).
+
+## Script it yourself
+
+Anything that can make an HTTP request can drive your windows:
+
+```sh
+# Sanity check — is the server up, is the grant in place?
+curl -s 127.0.0.1:47725/api/v1/state | jq '{axTrusted, monitors: [.monitors[].label]}'
+
+# Frontmost window → left half
+curl -s -X POST 127.0.0.1:47725/api/v1/tile -d '{"preset":"left_half"}'
+
+# Safari → top-right of a specific display
+curl -s -X POST 127.0.0.1:47725/api/v1/tile \
+  -d '{"preset":"top_right","app":"Safari","monitor":"DELL U2720Q (right)"}'
+
+# Explicit cells: rows 0-2, cols 1-4 (inclusive, 0-based)
+curl -s -X POST 127.0.0.1:47725/api/v1/tile \
+  -d '{"cells":{"startRow":0,"endRow":2,"startCol":1,"endCol":4}}'
+```
+
+### Shell aliases
+
+```sh
+alias vl='curl -s -X POST 127.0.0.1:47725/api/v1/tile -d "{\"preset\":\"left_half\"}" > /dev/null'
+alias vr='curl -s -X POST 127.0.0.1:47725/api/v1/tile -d "{\"preset\":\"right_half\"}" > /dev/null'
+alias vf='curl -s -X POST 127.0.0.1:47725/api/v1/tile -d "{\"preset\":\"full\"}" > /dev/null'
+```
+
+### A "meeting mode" layout script
+
+Arrange browser + notes + terminal in one keystroke:
+
+```sh
+#!/bin/sh
+API=127.0.0.1:47725/api/v1
+curl -s -X POST $API/tile -d '{"preset":"left_half","app":"Safari"}'
+curl -s -X POST $API/tile -d '{"preset":"top_right","app":"Notes"}'
+curl -s -X POST $API/tile -d '{"preset":"bottom_right","app":"Terminal"}'
+```
+
+App names come from `GET /api/v1/apps`; `app` accepts a name or pid.
+
+### Manage shortcuts & settings from scripts
+
+```sh
+# Digit2 → right half of whatever display (relative)
+curl -s -X PUT 127.0.0.1:47725/api/v1/shortcuts/Digit2 \
+  -d '{"monitor":null,"selection":{"startRow":0,"endRow":5,"startCol":3,"endCol":5}}'
+
+# Pin Digit3 to a specific display
+curl -s -X PUT 127.0.0.1:47725/api/v1/shortcuts/Digit3 \
+  -d '{"monitor":"DELL U2720Q (left)","selection":{"startRow":0,"endRow":5,"startCol":0,"endCol":2}}'
+
+curl -s -X DELETE 127.0.0.1:47725/api/v1/shortcuts/Digit2
+
+# 8×6 grid, 16px gaps (saved shortcuts rescale proportionally)
+curl -s -X PUT 127.0.0.1:47725/api/v1/config/grid \
+  -d '{"rows":6,"cols":8,"windowGap":{"width":16,"height":16}}'
+```
+
+Selections are grid cells (default 6×6), inclusive and 0-based — `left_half`
+of 6×6 is `{startRow:0,endRow:5,startCol:0,endCol:2}`.
+
+## When something fails
+
+- API failures return `400` with `{"error":"…"}` — unknown preset, selection
+  outside the grid, no monitor matching that label (the message lists the
+  available labels), or a missing Accessibility grant
+- **Client shows "failed"** — is Vindue running? Right port? API enabled in
+  Settings?
+- **Browser-based clients can't connect** — by design. Use a native client.
+
+The complete endpoint and tool surface lives in
+[HTTP API](../reference/http-api/index.mdx) and [MCP](../reference/mcp).

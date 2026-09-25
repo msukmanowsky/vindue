@@ -12,17 +12,8 @@ cells, and the frontmost window snaps to exactly that region. ("Divvy" is a
 Mizage trademark; this project is
 unaffiliated.)
 
-What sets it apart is the **automation surface**: a loopback HTTP server with
-two faces —
-
-- a **REST API** (`/api/v1/*`) so scripts, shell aliases, and Shortcuts.app can
-  drive window management, and
-- an **MCP endpoint** (`/mcp`, [Model Context Protocol](https://modelcontextprotocol.io))
-  so Claude Code, Claude Desktop, or any MCP client can tile your windows from
-  natural language.
-
-Free, [MIT licensed](https://github.com/msukmanowsky/vindue/blob/main/LICENSE),
-no account, no telemetry — config is a JSON file you own.
+No Dock icon, no account, no telemetry — Vindue lives in your menu bar and
+keeps every setting in a JSON file you own.
 
 ## Features
 
@@ -37,76 +28,13 @@ no account, no telemetry — config is a JSON file you own.
   live reload, proportional shortcut rescaling on grid changes
 - **Display identification that survives replug** — canonical labels with
   positional suffixes for identical monitors
+- **Built for AI and automation** — every panel action is also an API call:
+  loopback REST for scripts, [MCP](../reference/mcp) for Claude & friends
+  ([automation guide](../guide/automating))
 - **Private by construction** — loopback-only server, browser-request
   rejection, everything local
 
-## Install
+Free and [MIT licensed](https://github.com/msukmanowsky/vindue/blob/main/LICENSE).
 
-Download the latest **`Vindue_x.y.z_universal.dmg`** from
-[GitHub Releases](https://github.com/msukmanowsky/vindue/releases) (Apple
-Silicon + Intel) and drag Vindue to Applications.
-
-:::note Gatekeeper
-Until notarized releases ship, macOS may warn about an "unidentified
-developer" on first launch: right-click the app → **Open** → **Open**, or
-allow it under System Settings → Privacy & Security.
-:::
-
-### Verifying your download
-
-Two independent proofs ship with every release:
-
-- **Checksum** — `shasum -a 256 Vindue_x.y.z_universal.dmg` must match the
-  `SHA256SUMS.txt` asset on the release page.
-- **Build provenance** — each dmg carries a Sigstore-signed SLSA attestation in
-  GitHub's transparency log, tying it to the exact tagged commit and the
-  official repo's CI:
-
-  ```sh
-  gh attestation verify Vindue_x.y.z_universal.dmg --owner msukmanowsky
-  ```
-
-Vindue is MIT-licensed open source — you can always check out the tag and build
-it yourself.
-
-### From source
-
-```sh
-git clone https://github.com/msukmanowsky/vindue.git
-cd vindue
-npm install
-npm run tauri dev        # development
-npm run tauri build      # release .app + .dmg
-```
-
-Requires macOS, Node.js 20+, Rust (stable), and Xcode command line tools.
-
-## Accessibility permission (required)
-
-Moving other apps' windows uses the macOS **Accessibility** API. On first panel
-activation Vindue shows a banner naming the exact file that needs the grant:
-
-1. Click **Grant access…** — System Settings opens (and the panel dismisses so
-   it doesn't outline System Settings itself)
-2. Remove any stale Vindue entries with "−"
-3. Add the shown file ("+" then ⌘⇧G to paste the path, or drag it from Finder)
-   and toggle it on
-4. Re-open the panel — the grant is detected automatically
-
-:::tip Dev builds
-Ad-hoc signed builds get a new code-signing identity on every rebuild, so old
-Accessibility entries go stale — remove and re-add. Properly signed releases
-have a stable identity: grant once, persists across updates.
-:::
-
-The target outline and panel placement work *without* the grant — only applying
-regions needs it.
-
-## Menu-bar app
-
-There is no Dock icon. The menu-bar (tray) icon is home base: **left-click**
-opens the panels; **right-click** gives *Open* / *Settings…* / *Quit*.
-Launching Vindue again while it's running just focuses the running instance —
-Settings if open, otherwise the panels, like the hotkey.
-
-Next: the [quickstart](./quickstart) walkthrough.
+Next: the [quickstart](./quickstart) — install, grant access, first tile in
+under a minute.

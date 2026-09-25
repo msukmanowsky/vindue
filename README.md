@@ -90,7 +90,7 @@ curl -s -X POST 127.0.0.1:47725/api/v1/tile -d '{"preset":"left_half"}'
 14 endpoints — state, tile (9 presets or explicit cells), config CRUD,
 shortcut CRUD, monitors, apps, target, and the server's own live OpenAPI spec
 → **[full reference](https://vindue.app/docs/reference/http-api)** ·
-[curl tutorial](https://vindue.app/docs/guide/scripting-with-curl)
+[scripting recipes](https://vindue.app/docs/guide/automating)
 
 ## MCP
 
@@ -107,7 +107,7 @@ claude mcp add --transport http vindue http://127.0.0.1:47725/mcp
 ```
 
 → **[MCP reference](https://vindue.app/docs/reference/mcp)** ·
-[tutorial: tile with Claude](https://vindue.app/docs/guide/tile-with-claude)
+[tutorial: automate with scripts or AI](https://vindue.app/docs/guide/automating)
 
 ## Commands
 

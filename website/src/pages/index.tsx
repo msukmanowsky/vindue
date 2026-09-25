@@ -13,6 +13,7 @@ function HomepageHeader() {
   return (
     <header className={clsx('hero', styles.heroBanner)}>
       <div className="container">
+        <img className={styles.heroLogo} src="/img/logo.svg" alt="" aria-hidden="true" />
         <Heading as="h1" className="hero__title">
           {siteConfig.title}
         </Heading>
@@ -23,46 +24,44 @@ function HomepageHeader() {
             href="https://github.com/msukmanowsky/vindue/releases/latest/download/Vindue_universal.dmg">
             Download for macOS
           </Link>
-          <Link
-            className="button button--secondary button--lg margin-left--md"
-            to="/docs/getting-started/intro">
-            Read the docs
-          </Link>
         </div>
         <p className={styles.heroNote}>
           Free &amp; open source (MIT) · Apple Silicon + Intel · menu-bar app,
           no Dock icon · no telemetry, everything stays local
         </p>
-        {/* TODO(launch assets): demo GIF — hotkey → panel → drag → snap */}
+        <img
+          className={styles.heroDemo}
+          src="/img/vindue-demo.gif"
+          alt="Vindue demo: a hotkey opens a grid panel over every display, and dragging across cells tiles the frontmost window there"
+        />
       </div>
     </header>
   );
 }
 
-function AutomationTeaser() {
+function AutomationBand() {
   return (
     <section className={styles.automation}>
       <div className="container">
         <Heading as="h2" className={styles.automationTitle}>
-          One loopback server, two protocols
+          Built for AI and automation
         </Heading>
         <p className={styles.automationBlurb}>
-          Vindue serves a control API on <code>127.0.0.1</code> — REST for
-          scripts and humans, and an MCP endpoint so AI clients can drive your
-          windows. No auth to manage: the server rejects anything a browser
-          could send, so web pages can never reach it.
+          Every panel action is also an API call: Vindue serves a loopback
+          REST API and an MCP endpoint on <code>127.0.0.1</code>, so scripts,
+          Claude, or any MCP client can tile windows, manage shortcuts, and
+          read state. No auth to manage — the server rejects anything a
+          browser could send, so web pages can never reach it.
         </p>
         <div className="row">
           <div className="col col--6">
-            <Heading as="h3">Script it</Heading>
-            <CodeBlock language="bash">
+            <CodeBlock language="bash" title="REST">
               {`curl -s -X POST 127.0.0.1:47725/api/v1/tile \\
   -d '{"preset":"left_half","app":"Safari"}'`}
             </CodeBlock>
           </div>
           <div className="col col--6">
-            <Heading as="h3">Or let your AI drive</Heading>
-            <CodeBlock language="bash">
+            <CodeBlock language="bash" title="MCP">
               {`claude mcp add --transport http vindue \\
   http://127.0.0.1:47725/mcp`}
             </CodeBlock>
@@ -74,15 +73,14 @@ function AutomationTeaser() {
 }
 
 export default function Home(): React.ReactNode {
-  const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
       title="Grid window tiling for macOS"
       description="Vindue is an open-source grid window tiler for macOS with a built-in HTTP API and MCP server, so scripts and AI clients can drive window management.">
       <HomepageHeader />
       <main>
-        <AutomationTeaser />
         <HomepageFeatures />
+        <AutomationBand />
       </main>
     </Layout>
   );

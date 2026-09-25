@@ -5,7 +5,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 const config: Config = {
   title: 'Vindue',
   tagline: 'Grid window tiling for macOS — drivable by scripts and AI',
-  favicon: 'img/icon-64.png',
+  favicon: 'img/favicon.png',
 
   future: {
     v4: true,
@@ -94,9 +94,9 @@ const config: Config = {
       title: 'Vindue',
       logo: {
         alt: 'Vindue icon',
-        src: 'img/icon-64.png',
-        width: 24,
-        height: 24,
+        src: 'img/logo.svg',
+        width: 26,
+        height: 26,
       },
       items: [
         {
@@ -104,12 +104,6 @@ const config: Config = {
           sidebarId: 'docs',
           position: 'left',
           label: 'Docs',
-        },
-        {
-          type: 'doc',
-          docId: 'reference/roadmap',
-          position: 'left',
-          label: 'Roadmap',
         },
         {
           href: 'https://github.com/sponsors/msukmanowsky',

@@ -20,3 +20,8 @@
   --ifm-color-primary-lightest: #bfd7fe;
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
 }
+
+.navbar__logo img {
+  width: 1.625rem;
+  height: 1.625rem;
+}

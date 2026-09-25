@@ -1,40 +1,96 @@
 ---
 sidebar_position: 2
 title: Quickstart
-description: The one interaction loop — open the panel, drag across the grid, release.
+description: Install Vindue, grant it access, tile your first window, and give it a hotkey.
 ---
 
 # Quickstart
 
+From download to one-keystroke tiling in five short steps.
+
+## 1. Install
+
+Download **[Vindue_universal.dmg](https://github.com/msukmanowsky/vindue/releases/latest/download/Vindue_universal.dmg)**
+(Apple Silicon + Intel), open it, and drag Vindue into Applications. Launch it:
+a small icon appears in your menu bar and stays out of your way.
+
+:::note[Verifying your download]
+
+Every release ships two independent proofs: `shasum -a 256
+Vindue_universal.dmg` must match the
+[SHA256SUMS.txt](https://github.com/msukmanowsky/vindue/releases/latest/download/SHA256SUMS.txt)
+release asset, and `gh attestation verify Vindue_universal.dmg --owner
+msukmanowsky` proves the dmg was built from the tagged commit by this repo's
+CI (Sigstore SLSA attestation).
+
+:::
+
+## 2. Grant Accessibility access (once)
+
+Moving other apps' windows uses the macOS **Accessibility** API. On first panel
+activation Vindue shows a banner naming the exact file that needs the grant:
+
+1. Click **Grant access…** — System Settings opens (and the panel dismisses so
+   it doesn't outline System Settings itself)
+2. Remove any stale Vindue entries with "−"
+3. Add the shown file ("+" then ⌘⇧G to paste the path, or drag it from Finder)
+   and toggle it on
+4. Re-open the panel — the grant is detected automatically
+
+The target outline and panel placement work *without* the grant — only
+applying regions needs it.
+
+:::tip[Dev builds]
+Ad-hoc signed builds get a new code-signing identity on every rebuild, so old
+Accessibility entries go stale — remove and re-add. Properly signed releases
+have a stable identity: grant once, persists across updates.
+:::
+
+## 3. Tile your first window
+
 Vindue has exactly one interaction loop. Learn it in 30 seconds.
 
-## 1. Focus any window
+**Focus any window** — whatever is frontmost, on any display, is the
+**target**. Vindue snapshots it *before* the panel opens, so the panel itself
+never steals target status.
 
-Whatever window is frontmost — on any display — is the **target**. Vindue
-snapshots it *before* the panel opens, so the panel itself never steals
-target status.
-
-## 2. Open the panels
-
-**Left-click the menu-bar icon**, or press your global hotkey if you've
-recorded one in Settings (there is none by default).
-
-A grid panel appears **on every display at once** — centered, sized to that
-display's aspect ratio — with the panel on the target's display focused. Each
-panel header shows the target app's **icon + name**, and the target window is
+**Open the panels** — left-click the menu-bar icon. (Next step gives you a
+hotkey for this.) A grid panel appears **on every display at once** — centered, sized to that display's
+aspect ratio — with the panel on the target's display focused. Each panel
+header shows the target app's **icon + name**, and the target window is
 **outlined in blue** so you can see exactly what will move.
 
-## 3. Drag across the grid
-
-Drag over cells; the selection highlights live. **Release** → the target
-window is moved/resized to that region (work area, window gaps, and screen
-margins applied). The panels auto-dismiss after applying.
+**Drag across the grid** — the selection highlights live. **Release** → the
+target window is moved/resized to that region (work area, window gaps, and
+screen margins applied). The panels auto-dismiss after applying.
 
 - **Esc** dismisses without applying
 - Clicking any other app's window dismisses (the panels are true modals)
 - Move or resize the target while open — the outline follows
 - To retarget without dismissing: click the app name in the header and pick
   from the running-apps list (with icons)
+
+## 4. Give it a hotkey
+
+Dragging from the menu bar is fine, but the whole point is speed: bind the
+panels to a key combo you'll never think about.
+
+1. Tray right-click → **Settings…** (or the ⚙ button in a panel)
+2. Under **Keybindings**, click the *Open Vindue* field and press your
+   combination — **⌘⇧Space** is a good default if you're free
+3. **Save** (the window closes; the hotkey registers immediately)
+
+Vindue rejects combos macOS reserves (⌘Tab, ⌘Space…) or ones that are easy to
+hit by accident, and tells you why on the spot. Test it: press your combo from
+any app — the panels open over whatever is frontmost. There is no hotkey by
+default, and ✕ Clear removes it again; the menu-bar icon always works.
+
+## 5. Make it yours
+
+- **Settings…** also holds grid size (1–12 × 1–12), window gaps, screen
+  margins, shortcut management, and the API toggle
+- Bind grid regions to keys for one-keystroke layouts — see
+  [Shortcuts](../guide/shortcuts)
 
 ## Presets without dragging
 
@@ -49,10 +105,21 @@ Nine region presets — `full`, `left_half`, `right_half`, `top_half`,
 also available through the [HTTP API](../reference/http-api/index.mdx) and
 [MCP tools](../reference/mcp).
 
-## Make it yours
+## Living in the menu bar
 
-- **Settings…** (tray right-click, or the ⚙ button in a panel): grid size
-  (1–12 × 1–12), window gaps, screen margins, the global hotkey, shortcut
-  management, and the API toggle
-- [Record a global hotkey](../guide/settings) so you never touch the mouse
-- [Add Vindue to your AI](../reference/mcp) and tile windows from Claude
+There is no Dock icon. The menu-bar (tray) icon is home base: **left-click**
+opens the panels; **right-click** gives *Open* / *Settings…* / *Quit*.
+Launching Vindue again while it's running just focuses the running instance —
+Settings if open, otherwise the panels, like the hotkey.
+
+## Build from source
+
+```sh
+git clone https://github.com/msukmanowsky/vindue.git
+cd vindue
+npm install
+npm run tauri dev        # development
+npm run tauri build      # release .app + .dmg
+```
+
+Requires macOS, Node.js 20+, Rust (stable), and Xcode command line tools.

@@ -22,7 +22,7 @@ While the panels are open:
 By default assignments are **pinned** to the display whose panel you're on:
 click display B's panel, press the key, drag — the shortcut belongs to B.
 Settings → Shortcuts can switch assignments to **relative** (no display
-binding; the shortcut follows the panel at apply time, like Divvy).
+binding; the shortcut follows the panel at apply time).
 
 ## Apply
 
@@ -46,9 +46,10 @@ Shortcuts persist in `config.json` and are editable in
 [Settings → Shortcuts](./settings): monitor dropdown, drag-in-mini-grid region
 editor, and add-by-pressing-a-key. They can also be created and removed
 through the [HTTP API](../reference/http-api/index.mdx) and
-[MCP tools](../reference/mcp) — handy for letting an AI set up your layout.
+[MCP tools](../reference/mcp) — see
+[Automating Vindue](./automating) for recipes.
 
-:::note Scope
-Shortcuts are *local* — they fire while the panels are open. Divvy-style
-*global* named shortcuts (fire anytime, no panel) are on the roadmap.
+:::note[Scope]
+Shortcuts are *local* — they fire while the panels are open. *Global* named
+shortcuts (fire anytime, no panel) are on the roadmap.
 :::

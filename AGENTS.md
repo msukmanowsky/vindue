@@ -74,5 +74,9 @@ parses `tauri.conf.json` in seconds.
   `forEach(async …)` — can exit 0 without writing anything). Always use the
   explicit id: `gen-api-docs vindue` / `clean-api-docs vindue`; every repo
   script already does.
+- Admonitions need **bracketed titles**: `:::tip[Title]` … `:::`. The legacy
+  bare form (`:::tip Title`) silently renders as literal `:::` text under
+  `future: {v4: true}` (MDX1-compat parser off). All docs admonitions were
+  converted 2026-09-25; keep new ones bracketed.
 - `RELEASE_CHECKLIST.md` is a private working doc (gitignored) — never
   reference it from tracked files.

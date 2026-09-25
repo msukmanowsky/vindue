@@ -1,25 +1,41 @@
 .heroBanner {
-  padding: 5rem 0 3rem;
+  padding: 6rem 0 5rem;
   text-align: center;
   position: relative;
   overflow: hidden;
+}
+
+.heroLogo {
+  display: block;
+  width: 5.5rem;
+  height: 5.5rem;
+  margin: 0 auto 1.25rem;
 }
 
 .buttons {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
 }
 
 .heroNote {
-  margin-top: 1.5rem;
+  margin-top: 1.25rem;
   font-size: 0.9rem;
   opacity: 0.75;
 }
 
+.heroDemo {
+  display: block;
+  width: min(100%, 54rem);
+  margin: 3.5rem auto 0;
+  border-radius: 0.75rem;
+  border: 1px solid var(--ifm-color-emphasis-300);
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.35);
+}
+
 .automation {
-  padding: 3rem 0;
+  padding: 4rem 0 5rem;
 }
 
 .automationTitle {
@@ -29,11 +45,15 @@
 .automationBlurb {
   text-align: center;
   max-width: 46rem;
-  margin: 0 auto 2rem;
+  margin: 0 auto 2.5rem;
 }
 
 @media screen and (max-width: 996px) {
   .heroBanner {
-    padding: 2rem;
+    padding: 2.5rem 1rem 3rem;
+  }
+
+  .heroDemo {
+    margin-top: 2.5rem;
   }
 }

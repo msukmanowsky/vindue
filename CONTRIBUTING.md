@@ -5,7 +5,7 @@ contributions of any size are welcome.
 
 ## What Vindue is
 
-A grid-based window tiler for macOS (inspired by Divvy), built with Tauri 2
+A grid-based window tiler for macOS, built with Tauri 2
 (React + TypeScript front end, Rust back end). Its distinguishing feature is
 a built-in automation surface: a loopback HTTP API (`/api/v1/*`) and an MCP
 server (`/mcp`) so scripts and AI clients can drive window management.
