@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#17171f"/><stop offset="1" stop-color="#0e0e13"/>
+    </linearGradient>
+    <linearGradient id="blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5b93ff"/><stop offset="1" stop-color="#2f6fe8"/>
+    </linearGradient>
+    <linearGradient id="red" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ff6b5e"/><stop offset="1" stop-color="#e04438"/>
+    </linearGradient>
+    <linearGradient id="yel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffd257"/><stop offset="1" stop-color="#f0a92c"/>
+    </linearGradient>
+    <linearGradient id="tri" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3478f6"/><stop offset="0.5" stop-color="#e04438"/><stop offset="1" stop-color="#f0a92c"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="-0.2" r="0.9">
+      <stop offset="0" stop-color="#3478f6" stop-opacity="0.22"/>
+      <stop offset="0.7" stop-color="#3478f6" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="tiles" width="60" height="60" patternUnits="userSpaceOnUse">
+      <path d="M60 0H0V60" fill="none" stroke="#ffffff" stroke-opacity="0.035"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#tiles)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect width="1200" height="6" fill="url(#tri)"/>
+  <g transform="translate(110,195) scale(0.3243)">
+    <rect x="0" y="0" width="356" height="740" rx="36" fill="url(#blue)" stroke="#82a9ff" stroke-width="3"/>
+    <rect x="384" y="0" width="356" height="356" rx="36" fill="url(#red)" stroke="#ffa69e" stroke-width="3"/>
+    <rect x="384" y="384" width="356" height="356" rx="36" fill="url(#yel)" stroke="#ffe08f" stroke-width="3"/>
+  </g>
+  <text x="400" y="290" font-family="Avenir Next" font-weight="bold" font-size="112" fill="#ffffff">Vindue</text>
+  <text x="402" y="368" font-family="Avenir Next" font-weight="500" font-size="36" fill="#b9c3d4">Grid window tiling for macOS —</text>
+  <text x="402" y="416" font-family="Avenir Next" font-weight="500" font-size="36" fill="#b9c3d4">drivable by scripts and AI</text>
+  <text x="110" y="560" font-family="Avenir Next" font-weight="500" font-size="26" fill="#7f8a9b">Free &amp; open source (MIT) · Apple Silicon + Intel · vindue.app</text>
+</svg>

@@ -9,6 +9,7 @@ tiled — in one glance.
 | --- | --- |
 | `icon-d-tricolor.{svg,png}` | **Shipping icon.** 1024×1024 master; feeds `npm run tauri icon`, which generates `src-tauri/icons/` |
 | `tray-template.svg` | Monochrome menu-bar glyph (silhouette of the same composition, widened gaps for ~18px legibility). Template images render from the alpha channel only — the full-color icon would be a solid blob in the menu bar. Rendered to `src-tauri/assets/tray-template.png` and embedded in the binary |
+| `og-card.svg` | 1200×630 social/link-sharing card (mark + wordmark + tagline on slate w/ tile texture). Rendered to `website/static/img/og.png`; wired via `themeConfig.image` in `docusaurus.config.ts` → emits `og:image` + `twitter:card` site-wide |
 | `icon-a-panel`, `icon-b-window`, `icon-c-snap`, `icon-e-tricolor-narrow` | The exploration trail: grid-selection, lit window, snap result, narrow-strip variant |
 
 Re-render any PNG at any size:

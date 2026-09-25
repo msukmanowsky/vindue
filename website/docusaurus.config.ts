@@ -86,6 +86,7 @@ const config: Config = {
   ],
 
   themeConfig: {
+    image: 'img/og.png',
     colorMode: {
       defaultMode: 'dark',
       respectPrefersColorScheme: true,
