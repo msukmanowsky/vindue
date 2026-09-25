@@ -2,8 +2,8 @@
 
 Docusaurus site: landing page + docs, served at **https://vindue.app**.
 Deployed by the `website` + `deploy` jobs in `.github/workflows/ci.yml` —
-on pushes to `main` touching `website/**`, only after the `check` job
-passes (docs never publish from a red commit).
+on pushes to `main` touching `website/**` (deploy only from `main`), only
+after the `check` job passes (docs never publish from a red commit).
 
 ```sh
 npm install      # Node 22 (matches CI)
