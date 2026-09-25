@@ -67,6 +67,18 @@ const config: Config = {
   themes: ['docusaurus-theme-openapi-docs'],
   plugins: [
     [
+      '@docusaurus/plugin-client-redirects',
+      {
+        // Pages promoted from Reference to top-level sidebar members.
+        redirects: [
+          {from: '/docs/reference/roadmap', to: '/docs/roadmap'},
+          {from: '/docs/reference/contributing', to: '/docs/contributing'},
+          {from: '/docs/reference/troubleshooting', to: '/docs/troubleshooting'},
+          {from: '/docs/reference/architecture', to: '/docs/architecture'},
+        ],
+      },
+    ],
+    [
       'docusaurus-plugin-openapi-docs',
       {
         id: 'api',
@@ -127,7 +139,7 @@ const config: Config = {
             {label: 'Getting started', to: '/docs/getting-started/intro'},
             {label: 'HTTP API', to: '/docs/reference/http-api'},
             {label: 'MCP', to: '/docs/reference/mcp'},
-            {label: 'Roadmap', to: '/docs/reference/roadmap'},
+            {label: 'Roadmap', to: '/docs/roadmap'},
           ],
         },
         {

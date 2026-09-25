@@ -9,7 +9,7 @@
 [![CI](https://github.com/msukmanowsky/vindue/actions/workflows/ci.yml/badge.svg)](https://github.com/msukmanowsky/vindue/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-[Docs](https://vindue.app/) · [Roadmap](https://vindue.app/docs/reference/roadmap) · [Changelog](CHANGELOG.md)
+[Docs](https://vindue.app/) · [Roadmap](https://vindue.app/docs/roadmap) · [Changelog](CHANGELOG.md)
 
 </div>
 
@@ -61,7 +61,7 @@ Release builds are MIT-licensed — and you can always build the tagged commit
 yourself. They are **not** Apple Developer ID-signed yet: on first launch
 macOS will call the app unidentified — open System Settings → Privacy &
 Security → **Open Anyway** (once per release; signing + notarization are
-[on the roadmap](https://vindue.app/docs/reference/roadmap)).
+[on the roadmap](https://vindue.app/docs/roadmap)).
 Details: [Verifying your download](https://vindue.app/docs/getting-started/quickstart).
 
 ### Accessibility permission
@@ -71,7 +71,7 @@ per signing identity (while releases stay unsigned, each update gets a fresh
 ad-hoc identity, so expect a quick re-grant after updating). The panel shows
 exactly which file needs the grant and detects it automatically:
 [setup guide](https://vindue.app/docs/getting-started/quickstart) ·
-[troubleshooting](https://vindue.app/docs/reference/troubleshooting)
+[troubleshooting](https://vindue.app/docs/troubleshooting)
 (incl. `AXError -25211` and coexisting with macOS's own tiling).
 
 ## Run from source
@@ -143,7 +143,7 @@ drift on either side fails the build.
 
 ## Known limitations (deliberate)
 
-- macOS only — the Windows port is on the [roadmap](https://vindue.app/docs/reference/roadmap)
+- macOS only — Windows & Linux ports are on the [roadmap](https://vindue.app/docs/roadmap)
 - Shortcuts are *local* (panel must be open) — *global* named shortcuts are a later phase
 - No live resize-preview rect beyond the target outline (deferred; no `macOSPrivateApi`, all public APIs)
 - Fullscreen-Space apps and apps that don't expose AX windows can't be resized
@@ -167,7 +167,7 @@ design/       brand assets — icon masters + menu-bar glyph
 
 Everything except one module (`src-tauri/src/ax.rs`, the macOS seam) is Tauri
 framework and official plugins — the full framework-vs-custom breakdown lives
-in the **[architecture docs](https://vindue.app/docs/reference/architecture)**.
+in the **[architecture docs](https://vindue.app/docs/architecture)**.
 
 ---
 
