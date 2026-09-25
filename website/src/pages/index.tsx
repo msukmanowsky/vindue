@@ -39,6 +39,26 @@ function HomepageHeader() {
   );
 }
 
+function VideoTour() {
+  return (
+    <section className={styles.video}>
+      <div className="container">
+        <Heading as="h2" className={styles.videoTitle}>
+          Watch the 3-minute tour
+        </Heading>
+        <div className={styles.videoWrap}>
+          <iframe
+            src="https://www.youtube-nocookie.com/embed/jSGT-9tCG1A"
+            title="Vindue tour — grid tiling, shortcuts, and AI control"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function AutomationBand() {
   return (
     <section className={styles.automation}>
@@ -80,6 +100,7 @@ export default function Home(): React.ReactNode {
       <HomepageHeader />
       <main>
         <HomepageFeatures />
+        <VideoTour />
         <AutomationBand />
       </main>
     </Layout>

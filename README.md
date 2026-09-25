@@ -13,6 +13,14 @@
 
 </div>
 
+<div align="center">
+
+<img src="website/static/img/vindue-demo.gif" width="720" alt="Vindue demo: a hotkey opens a grid panel on every display; dragging across cells tiles the frontmost window there">
+
+<sub>**[▶ Watch the 3-minute tour](https://www.youtube.com/watch?v=jSGT-9tCG1A)**</sub>
+
+</div>
+
 An open-source menu-bar tiler built with Tauri 2 + React/TS. ("Divvy" is a
 Mizage trademark; this project is unaffiliated.)
 
