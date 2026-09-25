@@ -76,6 +76,13 @@ jobs:
           shasum -a 256 "$(basename "$dmg")" > SHA256SUMS.txt
           cat SHA256SUMS.txt
           gh release upload "${{ github.ref_name }}" SHA256SUMS.txt --clobber
+          # Versionless alias of the dmg — powers the site's one-click
+          # download button (releases/latest/download/Vindue_universal.dmg
+          # always resolves to the newest FULL release; GitHub skips drafts
+          # and pre-releases by design). Byte-identical to the versioned dmg,
+          # so SHA256SUMS and the Sigstore attestation verify it unchanged.
+          cp "$(basename "$dmg")" Vindue_universal.dmg
+          gh release upload "${{ github.ref_name }}" Vindue_universal.dmg --clobber
           echo "dmg=$dmg" >> "$GITHUB_OUTPUT"
 
       # The tag's machine-readable API surface — the same committed files the
