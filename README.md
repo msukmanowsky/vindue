@@ -151,36 +151,11 @@ website/      docs site (Docusaurus)
 design/       brand assets — icon masters + menu-bar glyph
 ```
 
-## Architecture: framework vs custom
+## Architecture
 
-Everything except one module is Tauri framework/plugins (expanded version:
-[architecture docs](https://vindue.app/docs/reference/architecture)):
-
-| Piece | How |
-|---|---|
-| Tray icon, menus, click events | Tauri core `TrayIconBuilder` |
-| Global hotkey (+ live re-register) | official `tauri-plugin-global-shortcut` |
-| Config persistence + auto-migration | official `tauri-plugin-store` + `seed_config` |
-| Open config.json in the default editor | official `tauri-plugin-opener`, capability-scoped to `$APPDATA/config.json` |
-| Target app icon in the panel header | `NSRunningApplication.icon` drawn into a 64×64 bitmap → PNG (`ax.rs`), raw-byte IPC, cached per pid |
-| Panel/settings/strip windows (frameless, always-on-top, hidden toggle, lazy creation) | Tauri window APIs |
-| Monitor info for geometry + display-bound shortcuts | `@tauri-apps/api/window` `currentMonitor()` / `availableMonitors()` |
-| Friendly display names (*DELL U2720Q*, not `Monitor #41042`) | `NSScreen.localizedName` via objc2 (`ax.rs`), keyed by CGDisplayModelNumber (tao's placeholder number) |
-| One panel per display (`panel-N`), each grid matching its display's aspect ratio; focus follows the target's display | dynamic windows + `panel_placement` + `set_size`/`set_position(Logical…)` (Rust) |
-| Live outline tracking + click-outside dismissal (true-modal) | watcher thread polling `CGWindowList` (runs only while the panels are visible) |
-| App picker (running apps + icons, retarget without dismissing) | `NSWorkspace.runningApplications` + per-pid `CGWindowList` scan (`ax.rs`) |
-| Key focus on hotkey activation | `NSApplication.activate` + `makeFirstResponder(contentView)` (`ax.rs`) — tao's show only unhides |
-| Grid UI, drag selection, chips, dotted previews, settings form/JSON | React (one bundle, routed by window label) |
-| Selection → rect math | pure TS (`src/geometry.ts`) + Rust port (`config.rs`), both pinned by `fixtures/` golden vectors |
-| Shortcut keys/colors/monitor resolution | pure TS (`src/shortcuts.ts`) + Rust port, fixture-pinned |
-| Config schema enforcement | Yup (`src/configSchema.ts`) + hand-rolled Rust twin (`config.rs`), fixture-pinned |
-| Loopback control API (REST `/api/v1`) | `axum` bound to 127.0.0.1 (`src-tauri/src/api.rs`) — Host allowlist + browser-request guard, test-pinned |
-| MCP endpoint (`/mcp`) | official MCP Rust SDK (`rmcp`) streamable-HTTP service nested in the same axum router (`src-tauri/src/mcp.rs`) |
-| **Custom native glue** | `src-tauri/src/ax.rs`: AX permission check, frontmost-window snapshot + bounds via `CGWindowListCopyWindowInfo`, resize/move via `AXUIElement`, localized display names + app icons via AppKit |
-
-Key ordering detail: the target window is snapshotted in Rust **before** the panel is
-shown/focused (`toggle_panel` in `lib.rs`) — otherwise the panel itself would become
-the "frontmost window".
+Everything except one module (`src-tauri/src/ax.rs`, the macOS seam) is Tauri
+framework and official plugins — the full framework-vs-custom breakdown lives
+in the **[architecture docs](https://vindue.app/docs/reference/architecture)**.
 
 ---
 
