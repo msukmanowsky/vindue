@@ -1,0 +1,1 @@
+{"title":"Body","body":{"content":{"application/json":{"schema":{"type":"object"}}},"description":"{ \"assignment\": \"pinned\" | \"relative\" } — a bare string body is also accepted. pinned = new shortcuts bind to the display they are created on; relative = they follow the panel's display at apply time.","required":true}}

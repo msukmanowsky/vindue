@@ -1,0 +1,1 @@
+{"title":"Body","body":{"content":{"application/json":{"schema":{"type":"object"}}},"description":"{ monitor: canonical label | index | null (relative — follows the panel's display), selection: { startRow, endRow, startCol, endCol } } — cells inclusive, must fit the current grid","required":true}}

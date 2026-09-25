@@ -25,7 +25,7 @@ pub const DEFAULT_API_PORT: u16 = 47725;
 
 // ---------- typed shape (serde, camelCase on the wire) ----------
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, utoipa::ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct Selection {
     pub start_row: i64,

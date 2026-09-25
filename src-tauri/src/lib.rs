@@ -18,6 +18,22 @@ mod mcp;
 #[cfg(target_os = "macos")]
 mod ax;
 
+/// Regenerate the website doc artifacts from compiled code: the OpenAPI spec
+/// for the REST API (utoipa) and the MCP tool catalog (exactly what
+/// `tools/list` serves clients). Returns normalized pretty JSON — consumed by
+/// the `docgen` bin (`npm run docs:gen`); the CI drift gate re-runs it and
+/// fails on any diff against the committed copies, so the human docs can't
+/// silently diverge from the code.
+pub fn doc_artifacts() -> (String, String) {
+    use utoipa::OpenApi as _;
+    let spec = serde_json::to_value(api::ApiDoc::openapi()).expect("spec serializes");
+    let tools = serde_json::to_value(mcp::tool_catalog()).expect("catalog serializes");
+    (
+        serde_json::to_string_pretty(&spec).expect("spec pretty-prints"),
+        serde_json::to_string_pretty(&tools).expect("catalog pretty-prints"),
+    )
+}
+
 const CONFIG_FILE: &str = "config.json";
 const STRIP_LABELS: [&str; 4] = ["hl-top", "hl-bottom", "hl-left", "hl-right"];
 // Panels are created dynamically, one per display: panel-0, panel-1, …

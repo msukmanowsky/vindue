@@ -1,0 +1,1 @@
+{"parameters":[{"description":"KeyboardEvent.code of the key, e.g. Digit1, KeyT, Backquote","example":"Digit1","in":"path","name":"key","required":true,"schema":{"type":"string"}}]}

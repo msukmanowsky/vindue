@@ -1,12 +1,12 @@
 ---
-sidebar_position: 1
+sidebar_position: 5
 title: Tile windows with Claude
 description: Hook Vindue up to Claude Code as an MCP server and arrange windows from natural language.
 ---
 
 # Tile windows with Claude
 
-Vindue ships an [MCP server](../mcp), so Claude can see your displays, move
+Vindue ships an [MCP server](../reference/mcp), so Claude can see your displays, move
 windows, and manage your shortcuts. Here's the whole setup.
 
 ## 1. Start Vindue
@@ -62,14 +62,14 @@ And it can tune Vindue itself:
 The server's `initialize` response includes usage instructions, so clients
 learn the workflow without docs: start with `get_state`, monitors are
 addressed by canonical label, grid cells are inclusive and 0-based. All 12
-tools are listed on the [MCP page](../mcp).
+tools are listed on the [MCP page](../reference/mcp).
 
 ## Troubleshooting
 
 - **`claude mcp list` shows failed** — is Vindue running? Is the port right
   (`curl 127.0.0.1:47725/api/v1/state`)? Is `api.enabled` on in Settings?
 - **`tile_window` returns an Accessibility error** — grant the permission
-  (see [install](../../getting-started/intro#accessibility-permission-required));
+   (see [install](../getting-started/intro#accessibility-permission-required));
   read-only tools keep working without it
 - **Browser-based clients can't connect** — by design: the server rejects
   browser-origin requests. Use a native MCP client.

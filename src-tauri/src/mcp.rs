@@ -419,3 +419,12 @@ pub fn service(app: tauri::AppHandle) -> api::McpService {
         StreamableHttpServerConfig::default(),
     )
 }
+
+/// The full tool catalog exactly as `tools/list` serves it to clients — built
+/// from the static router, no app handle required. Consumed by the `docgen`
+/// bin; the CI drift gate keeps the committed website copy byte-identical to
+/// what this returns, so the human docs can't diverge from the protocol
+/// surface AI clients actually see.
+pub fn tool_catalog() -> Vec<rmcp::model::Tool> {
+    VindueMcp::tool_router().list_all()
+}

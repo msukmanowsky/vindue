@@ -33,6 +33,9 @@
     "test:rust": "cd src-tauri && cargo test",
     "check:rust": "cd src-tauri && cargo fmt --check && cargo clippy -- -D warnings && cargo test",
     "website:build": "npm --prefix website run build",
+    "docs:gen": "cd src-tauri && cargo run --quiet --bin docgen",
+    "docs:render": "npm --prefix website run clean-api-docs -- vindue && npm --prefix website run gen-api-docs -- vindue",
+    "docs:all": "npm run docs:gen && npm run docs:render",
     "verify": "npm run build && npm test && npm run check:rust",
     "verify:all": "npm run verify && npm run website:build"
   },

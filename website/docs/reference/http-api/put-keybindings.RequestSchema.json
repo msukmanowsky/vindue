@@ -1,0 +1,1 @@
+{"title":"Body","body":{"content":{"application/json":{"schema":{"type":"object"}}},"description":"Merge-patch { \"openPanel\": \"Cmd+Alt+S\" } — accelerator string parsed by tauri-plugin-global-shortcut; \"\" clears the global open-panel hotkey.","required":true}}

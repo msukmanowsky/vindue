@@ -1,0 +1,654 @@
+{
+  "components": {
+    "schemas": {
+      "ErrorBody": {
+        "description": "The error body every REST endpoint returns on `400`. Docs schema only:\n`respond()` builds this shape inline (pinned by the tests below), and the\nstruct exists so utoipa can describe it — hence the dead-code allowance.",
+        "properties": {
+          "error": {
+            "description": "Human-readable reason for the failure.",
+            "type": "string"
+          }
+        },
+        "required": [
+          "error"
+        ],
+        "type": "object"
+      },
+      "Selection": {
+        "properties": {
+          "endCol": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "endRow": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "startCol": {
+            "format": "int64",
+            "type": "integer"
+          },
+          "startRow": {
+            "format": "int64",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "startRow",
+          "endRow",
+          "startCol",
+          "endCol"
+        ],
+        "type": "object"
+      },
+      "TileAppRef": {
+        "oneOf": [
+          {
+            "description": "Process id of the app to tile.",
+            "format": "int32",
+            "type": "integer"
+          },
+          {
+            "description": "App name (exact match first, else substring; case-insensitive).",
+            "type": "string"
+          }
+        ]
+      },
+      "TileReq": {
+        "properties": {
+          "app": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/TileAppRef",
+                "description": "Target app: pid number or name (exact, else substring, case-insensitive);\nomitted = frontmost window."
+              }
+            ]
+          },
+          "cells": {
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/Selection",
+                "description": "Explicit cells: { startRow, endRow, startCol, endCol }."
+              }
+            ]
+          },
+          "monitor": {
+            "description": "Monitor: omitted/\"current\" = the display holding the target window;\notherwise a canonical label (\"DELL U2720Q (left)\") or an index.",
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "preset": {
+            "description": "Named region: full, left_half, right_half, top_half, bottom_half,\ntop_left, top_right, bottom_left, bottom_right.",
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        },
+        "type": "object"
+      }
+    }
+  },
+  "info": {
+    "contact": {
+      "name": "Mike Sukmanowsky"
+    },
+    "description": "Loopback HTTP control API for the Vindue macOS window tiler.\n\n**Security model — no auth, by design.** The server binds `127.0.0.1` only, allowlists the `Host` header (`127.0.0.1`/`localhost` — DNS-rebinding defense), and rejects any request carrying `Origin` or `Sec-Fetch-Site` headers: browsers always attach them, curl/scripts/MCP clients never do — so a web page cannot drive your windows. Anything that can run code as your user can use this API; it grants no new capability.\n\nServed on `api.port` (default **47725**). All endpoints take and return JSON; `curl -d` works without setting Content-Type. Errors are `400` + `{ \"error\": \"…\" }`. The MCP endpoint (`/mcp`) shares this server — its tools delegate to the same handlers; see the MCP tools reference for that face.\n\nTiling requires the macOS Accessibility grant; the error says so when it is missing.",
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/msukmanowsky/vindue/blob/main/LICENSE"
+    },
+    "title": "Vindue control API",
+    "version": "v1"
+  },
+  "openapi": "3.1.0",
+  "paths": {
+    "/api/v1/apps": {
+      "get": {
+        "operationId": "getApps",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Running apps that own windows: [{ pid, name }] — usable as tile's app parameter"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "main-thread dispatch failed"
+          }
+        },
+        "summary": "List running apps",
+        "tags": [
+          "state"
+        ]
+      }
+    },
+    "/api/v1/config": {
+      "get": {
+        "operationId": "getConfig",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Full config: grid, keybindings, shortcuts, api"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "config store read failed"
+          }
+        },
+        "summary": "Read full config",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/api/v1/config/api": {
+      "put": {
+        "operationId": "putApiConfig",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "description": "Merge-patch { port (1024-65535), enabled } — rebinds this server itself; the in-flight response flushes before the swap.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The full config after the change"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "validation failed (port range, shape)"
+          }
+        },
+        "summary": "Update API settings",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/api/v1/config/grid": {
+      "put": {
+        "operationId": "putGrid",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "description": "Merge-patch: any subset of rows/cols (1-12), windowGap {width,height}, screenMargins {top,right,bottom,left} (px 0-300). Stored shortcuts rescale proportionally.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The full config after the change"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "validation failed (shape or ranges)"
+          }
+        },
+        "summary": "Update grid",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/api/v1/config/keybindings": {
+      "put": {
+        "operationId": "putKeybindings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "description": "Merge-patch { \"openPanel\": \"Cmd+Alt+S\" } — accelerator string parsed by tauri-plugin-global-shortcut; \"\" clears the global open-panel hotkey.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The full config after the change"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "validation failed or hotkey registration rejected"
+          }
+        },
+        "summary": "Update keybindings",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/api/v1/config/shortcuts/assignment": {
+      "put": {
+        "operationId": "putShortcutAssignment",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "description": "{ \"assignment\": \"pinned\" | \"relative\" } — a bare string body is also accepted. pinned = new shortcuts bind to the display they are created on; relative = they follow the panel's display at apply time.",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The full config after the change"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "assignment value not \"pinned\" or \"relative\""
+          }
+        },
+        "summary": "Update shortcut assignment",
+        "tags": [
+          "config"
+        ]
+      }
+    },
+    "/api/v1/monitors": {
+      "get": {
+        "operationId": "getMonitors",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Every display: index, canonical label, name, position, size, workArea, scaleFactor"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "system query failed"
+          }
+        },
+        "summary": "List monitors",
+        "tags": [
+          "state"
+        ]
+      }
+    },
+    "/api/v1/openapi.json": {
+      "get": {
+        "operationId": "getOpenapi",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "OpenAPI 3.1 spec for this server"
+          }
+        },
+        "summary": "This OpenAPI document",
+        "tags": [
+          "meta"
+        ]
+      }
+    },
+    "/api/v1/shortcuts": {
+      "get": {
+        "operationId": "getShortcuts",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Assignment mode plus every key → { monitor, selection } binding"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "config store read failed"
+          }
+        },
+        "summary": "List shortcuts",
+        "tags": [
+          "shortcuts"
+        ]
+      }
+    },
+    "/api/v1/shortcuts/{key}": {
+      "delete": {
+        "operationId": "deleteShortcut",
+        "parameters": [
+          {
+            "description": "KeyboardEvent.code of the key",
+            "example": "Digit1",
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "{ \"deleted\": bool } — whether the binding existed"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "config commit failed"
+          }
+        },
+        "summary": "Delete a shortcut",
+        "tags": [
+          "shortcuts"
+        ]
+      },
+      "put": {
+        "operationId": "putShortcut",
+        "parameters": [
+          {
+            "description": "KeyboardEvent.code of the key, e.g. Digit1, KeyT, Backquote",
+            "example": "Digit1",
+            "in": "path",
+            "name": "key",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object"
+              }
+            }
+          },
+          "description": "{ monitor: canonical label | index | null (relative — follows the panel's display), selection: { startRow, endRow, startCol, endCol } } — cells inclusive, must fit the current grid",
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "The full config after the change"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "key not assignable, or definition invalid / out of grid"
+          }
+        },
+        "summary": "Set a shortcut",
+        "tags": [
+          "shortcuts"
+        ]
+      }
+    },
+    "/api/v1/state": {
+      "get": {
+        "operationId": "getState",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "axTrusted, frontmost target window, monitors with canonical labels, and the full config"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "system query failed"
+          }
+        },
+        "summary": "Live app state",
+        "tags": [
+          "state"
+        ]
+      }
+    },
+    "/api/v1/target": {
+      "get": {
+        "operationId": "getTarget",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Frontmost window snapshot (pid, app name, bounds), or null if none"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "system query failed"
+          }
+        },
+        "summary": "Frontmost window",
+        "tags": [
+          "state"
+        ]
+      }
+    },
+    "/api/v1/tile": {
+      "post": {
+        "operationId": "tile",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TileReq"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            },
+            "description": "Applied rect, monitor label, and target window"
+          },
+          "400": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorBody"
+                }
+              }
+            },
+            "description": "Unknown preset, cells outside the grid, no target window or monitor match, or Accessibility not granted"
+          }
+        },
+        "summary": "Tile a window",
+        "tags": [
+          "tiling"
+        ]
+      }
+    }
+  },
+  "servers": [
+    {
+      "description": "loopback — the actual port comes from config api.port",
+      "url": "http://127.0.0.1:47725"
+    }
+  ],
+  "tags": [
+    {
+      "description": "Live app state: target window, monitors, running apps",
+      "name": "state"
+    },
+    {
+      "description": "Move/resize windows onto the grid",
+      "name": "tiling"
+    },
+    {
+      "description": "Read and patch config sections",
+      "name": "config"
+    },
+    {
+      "description": "Key → grid-region bindings",
+      "name": "shortcuts"
+    },
+    {
+      "description": "Self-description",
+      "name": "meta"
+    }
+  ]
+}

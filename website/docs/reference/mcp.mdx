@@ -1,5 +1,5 @@
 ---
-sidebar_position: 2
+sidebar_position: 4
 title: MCP (AI control)
 description: Register Vindue with Claude Code, Claude Desktop, or any MCP client — 12 tools for window management.
 ---
@@ -27,21 +27,19 @@ Then just ask: *"Put Safari on the left half of my right monitor."*
 
 ## Tools
 
-Settings + tiling; no UI control by design.
+Settings + tiling; no UI control by design. The catalog below is generated
+from the compiled Rust code — descriptions and parameter schemas exactly as
+`tools/list` serves them to clients — and pinned by a CI drift gate, so it
+cannot go stale.
 
-| Tool | What |
-|---|---|
-| `get_state` | AX trust, frontmost window, monitors + labels, full config — call first |
-| `tile_window` | preset or explicit cells; optional `monitor` (label/index/"current") and `app` (pid/name) |
-| `list_shortcuts` / `set_shortcut` / `delete_shortcut` | manage key → grid-region bindings |
-| `get_config` / `set_grid` / `set_margins` | read/tune the grid (shortcuts rescale on resize) |
-| `set_hotkey` / `set_shortcut_assignment` | global open-panel hotkey; pinned-vs-relative default |
-| `list_monitors` / `list_apps` | canonical display labels; running apps for `tile_window` |
+import McpToolsTable from '@site/src/components/McpToolsTable';
+
+<McpToolsTable />
 
 ## Design notes
 
 - **One implementation, two protocols** — every tool delegates to the exact
-  same handler functions as the [REST API](./http-api)
+  same handler functions as the [REST API](./http-api/index.mdx)
 - **Self-describing** — the server advertises usage instructions in its
   `initialize` response, so clients learn the workflow (check `get_state`,
   use canonical labels, cells are inclusive) without docs
@@ -54,4 +52,4 @@ Settings + tiling; no UI control by design.
 - The Accessibility grant for `tile_window` to move windows (read-only tools
   work without it)
 
-Walkthrough: [Tile windows with Claude](./tutorials/tile-with-claude).
+Walkthrough: [Tile windows with Claude](../guide/tile-with-claude).

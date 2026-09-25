@@ -43,6 +43,23 @@ npm run website:build             # docs site (after one-time `cd website && npm
 
 CI runs all of the above on every PR. Please keep it green.
 
+## API docs are generated
+
+The REST reference and the MCP tool catalog are **generated from the Rust
+code** — `utoipa` annotations in `src-tauri/src/api.rs` and the rmcp tool
+router in `src-tauri/src/mcp.rs`. If you touch the API surface:
+
+```sh
+npm run docs:all    # regenerate spec + catalog, then render the website endpoint pages
+```
+
+…and commit the regenerated files under `website/docs/reference/` (never
+hand-edit them). CI fails on any drift — the docs cannot silently diverge
+from the code — and each release ships the spec as an `openapi.json` asset.
+Optional local shortcut: `git config core.hooksPath hooks` installs a
+pre-commit hook that regenerates and stages them whenever API files are
+staged.
+
 ## The fixture-parity rule (important)
 
 Pure logic (validation, rescaling, cell→rect math, presets, monitor labels,
@@ -78,7 +95,11 @@ and the TS default are pinned to the same shape from both directions — see
 
 - Small, focused PRs; describe the "why" in the description.
 - Add or update fixtures/tests for logic changes.
-- Update `README.md` (and website docs, once present) for user-visible changes.
+- User-visible changes → update the website docs (`website/docs/`) — the
+  README points at the site instead of duplicating it; touch `README.md` only
+  for pitch/install/trust-level changes.
+- API surface changes → run `npm run docs:all` and include the regenerated
+  files in the PR.
 - No comments-only churn; match the existing code style.
 
 ## Versioning & releases
@@ -95,8 +116,9 @@ Releases are cut from `main` by tag:
    validating install/first-run quality. CI auto-flags hyphenated tags as
    GitHub **pre-releases** (orange badge, excluded from "latest"). Fixes
    during the rc period ship as `rc.N+1`.
-3. CI builds a universal dmg, attaches `SHA256SUMS.txt` + a Sigstore build
-   attestation, and opens a **draft** release.
+3. CI builds a universal dmg, attaches `SHA256SUMS.txt`, a Sigstore build
+   attestation, and the tag's frozen API surface (`openapi.json` +
+   `mcp-tools.json`), and opens a **draft** release.
 4. The maintainer smoke-tests the dmg (clean machine, Gatekeeper, first run),
    then publishes. The final `vX.Y.Z` repeats the flow without the hyphen —
    a full release that becomes "latest".

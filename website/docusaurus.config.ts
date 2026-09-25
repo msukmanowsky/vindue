@@ -39,12 +39,47 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/msukmanowsky/vindue/tree/main/website/',
+          // *.tag.mdx are plugin-generated tag summaries (committed — the
+          // drift gate covers them) but near-empty as pages; keep them out of
+          // the built site so the sidebar lists only real content.
+          exclude: [
+            '**/_*.{js,jsx,ts,tsx,md,mdx}',
+            '**/_*/**',
+            '**/*.test.{js,ts}',
+            '**/__tests__/**',
+            '**/*.tag.mdx',
+          ],
         },
         blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
       } satisfies Preset.Options,
+    ],
+  ],
+
+  // Endpoint pages are GENERATED from the OpenAPI spec that the Rust code
+  // produces (`npm run docs:all` at the repo root → spec + MDX; never
+  // `gen-api-docs all` — upstream race bug, see AGENTS.md). Both generated
+  // copies are committed and pinned by CI drift gates — see CONTRIBUTING.md.
+  themes: ['docusaurus-theme-openapi-docs'],
+  plugins: [
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'api',
+        docsPluginId: 'default',
+        config: {
+          vindue: {
+            specPath: 'docs/reference/generated/openapi.json',
+            outputDir: 'docs/reference/http-api',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+            },
+          },
+        },
+      },
     ],
   ],
 
@@ -93,8 +128,8 @@ const config: Config = {
           title: 'Docs',
           items: [
             {label: 'Getting started', to: '/docs/getting-started/intro'},
-            {label: 'HTTP API', to: '/docs/automation/http-api'},
-            {label: 'MCP (AI control)', to: '/docs/automation/mcp'},
+            {label: 'HTTP API', to: '/docs/reference/http-api'},
+            {label: 'MCP (AI control)', to: '/docs/reference/mcp'},
             {label: 'Roadmap', to: '/docs/reference/roadmap'},
           ],
         },

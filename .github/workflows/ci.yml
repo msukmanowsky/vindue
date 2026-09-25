@@ -39,3 +39,17 @@ jobs:
 
       - run: cargo test
         working-directory: src-tauri
+
+      # Docs drift gate: the committed OpenAPI spec + MCP tool catalog are
+      # generated from the code (utoipa annotations + the rmcp router).
+      # Regenerate and fail on any diff — the human docs cannot silently
+      # diverge from the API surface.
+      - run: cargo run --quiet --bin docgen
+        working-directory: src-tauri
+
+      - name: Docs drift gate (generated JSON)
+        run: |
+          if ! git diff --exit-code -- website/docs/reference/generated; then
+            echo "::error::Generated API docs are stale — run 'npm run docs:all' and commit the result."
+            exit 1
+          fi

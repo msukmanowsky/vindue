@@ -1,0 +1,383 @@
+[
+  {
+    "description": "Remove a shortcut binding by its KeyboardEvent.code. Reports whether it existed.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "key": {
+          "description": "KeyboardEvent.code of the key, e.g. \"Digit1\".",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key"
+      ],
+      "type": "object"
+    },
+    "name": "delete_shortcut"
+  },
+  {
+    "description": "The full config: grid (rows, cols, windowGap, screenMargins), keybindings (openPanel hotkey; \"\" = none), shortcuts (assignment + keys), api (port, enabled).",
+    "inputSchema": {
+      "properties": {},
+      "type": "object"
+    },
+    "name": "get_config"
+  },
+  {
+    "description": "Everything about Vindue right now: Accessibility trust, the current target window (frontmost), all monitors with canonical labels, and the full config (grid, keybindings, shortcuts, api). Call this first.",
+    "inputSchema": {
+      "properties": {},
+      "type": "object"
+    },
+    "name": "get_state"
+  },
+  {
+    "description": "Running apps that own windows: pid and name — pass either to tile_window's app parameter.",
+    "inputSchema": {
+      "properties": {},
+      "type": "object"
+    },
+    "name": "list_apps"
+  },
+  {
+    "description": "All connected displays: canonical label (use these strings to target monitors — twins get positional suffixes like \"(left)\"/\"(right)\"), position, size, work area, and scale factor.",
+    "inputSchema": {
+      "properties": {},
+      "type": "object"
+    },
+    "name": "list_monitors"
+  },
+  {
+    "description": "The shortcuts config: assignment mode (pinned binds new shortcuts to the monitor they are created on; relative follows the panel's monitor) plus every key → { monitor, selection } binding.",
+    "inputSchema": {
+      "properties": {},
+      "type": "object"
+    },
+    "name": "list_shortcuts"
+  },
+  {
+    "description": "Update the grid: rows/cols (1-12), windowGap and screenMargins (px 0-300). Only the fields passed change. Stored shortcuts that no longer fit are rescaled proportionally, and open panel/Settings views refresh.",
+    "inputSchema": {
+      "$defs": {
+        "GapParams": {
+          "properties": {
+            "height": {
+              "description": "Vertical gap between tiled windows, px 0-300.",
+              "format": "int64",
+              "type": "integer"
+            },
+            "width": {
+              "description": "Horizontal gap between tiled windows, px 0-300.",
+              "format": "int64",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "width",
+            "height"
+          ],
+          "type": "object"
+        },
+        "MarginsParams": {
+          "properties": {
+            "bottom": {
+              "description": "Margin inset from the bottom of the work area, px 0-300.",
+              "format": "int64",
+              "type": "integer"
+            },
+            "left": {
+              "description": "Margin inset from the left of the work area, px 0-300.",
+              "format": "int64",
+              "type": "integer"
+            },
+            "right": {
+              "description": "Margin inset from the right of the work area, px 0-300.",
+              "format": "int64",
+              "type": "integer"
+            },
+            "top": {
+              "description": "Margin inset from the top of the work area, px 0-300.",
+              "format": "int64",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ],
+          "type": "object"
+        }
+      },
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "cols": {
+          "description": "Grid columns, 1-12. Omit to leave unchanged.",
+          "format": "int64",
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "rows": {
+          "description": "Grid rows, 1-12. Omit to leave unchanged.",
+          "format": "int64",
+          "type": [
+            "integer",
+            "null"
+          ]
+        },
+        "screenMargins": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MarginsParams"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Margins inset from the screen edges, px 0-300."
+        },
+        "windowGap": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/GapParams"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Gap between tiled windows, px 0-300."
+        }
+      },
+      "type": "object"
+    },
+    "name": "set_grid"
+  },
+  {
+    "description": "Set or clear the global hotkey that opens the Vindue panel (e.g. \"CommandOrControl+Alt+S\"; \"\" = none). Registration fails if macOS or another app owns the combo — the error will say so.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "keys": {
+          "description": "Accelerator string like \"CommandOrControl+Alt+S\", or \"\" to remove the\nglobal open-panel hotkey.",
+          "type": "string"
+        }
+      },
+      "required": [
+        "keys"
+      ],
+      "type": "object"
+    },
+    "name": "set_hotkey"
+  },
+  {
+    "description": "Set screen margins (px 0-300) inset from each edge of every display's work area.",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "bottom": {
+          "description": "Margin inset from the bottom of the work area, px 0-300.",
+          "format": "int64",
+          "type": "integer"
+        },
+        "left": {
+          "description": "Margin inset from the left of the work area, px 0-300.",
+          "format": "int64",
+          "type": "integer"
+        },
+        "right": {
+          "description": "Margin inset from the right of the work area, px 0-300.",
+          "format": "int64",
+          "type": "integer"
+        },
+        "top": {
+          "description": "Margin inset from the top of the work area, px 0-300.",
+          "format": "int64",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "top",
+        "right",
+        "bottom",
+        "left"
+      ],
+      "type": "object"
+    },
+    "name": "set_margins"
+  },
+  {
+    "description": "Create or update a keyboard shortcut that tiles the frontmost window into the given grid cells. Pass a monitor label from list_monitors (or index) to pin it to a display; omit monitor for a relative shortcut.",
+    "inputSchema": {
+      "$defs": {
+        "CellsParams": {
+          "properties": {
+            "endCol": {
+              "description": "Last grid column of the region (inclusive).",
+              "format": "int64",
+              "type": "integer"
+            },
+            "endRow": {
+              "description": "Last grid row of the region (inclusive).",
+              "format": "int64",
+              "type": "integer"
+            },
+            "startCol": {
+              "description": "First grid column of the region (0-based, inclusive).",
+              "format": "int64",
+              "type": "integer"
+            },
+            "startRow": {
+              "description": "First grid row of the region (0-based, inclusive).",
+              "format": "int64",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "startRow",
+            "endRow",
+            "startCol",
+            "endCol"
+          ],
+          "type": "object"
+        }
+      },
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "key": {
+          "description": "KeyboardEvent.code of the key, e.g. \"Digit1\", \"KeyT\", \"Backquote\".",
+          "type": "string"
+        },
+        "monitor": {
+          "description": "Monitor label from list_monitors or index to pin this shortcut to a\ndisplay. Omit for a relative shortcut that follows whichever monitor\nthe panel is on.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "selection": {
+          "$ref": "#/$defs/CellsParams",
+          "description": "Grid cells (inclusive) the shortcut tiles into."
+        }
+      },
+      "required": [
+        "key",
+        "selection"
+      ],
+      "type": "object"
+    },
+    "name": "set_shortcut"
+  },
+  {
+    "description": "Set whether new shortcuts are \"pinned\" to the monitor they are created on or \"relative\" (following the panel's monitor).",
+    "inputSchema": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "assignment": {
+          "description": "\"pinned\" (new shortcuts bind to the monitor they are created on) or\n\"relative\" (shortcuts follow the panel's monitor).",
+          "type": "string"
+        }
+      },
+      "required": [
+        "assignment"
+      ],
+      "type": "object"
+    },
+    "name": "set_shortcut_assignment"
+  },
+  {
+    "description": "Move and resize a window to a grid region. Presets: full, left_half, right_half, top_half, bottom_half, top_left, top_right, bottom_left, bottom_right — or pass explicit inclusive cells. Targets the frontmost window by default; pass an app name or pid for another app. The monitor defaults to the one holding the target window.",
+    "inputSchema": {
+      "$defs": {
+        "CellsParams": {
+          "properties": {
+            "endCol": {
+              "description": "Last grid column of the region (inclusive).",
+              "format": "int64",
+              "type": "integer"
+            },
+            "endRow": {
+              "description": "Last grid row of the region (inclusive).",
+              "format": "int64",
+              "type": "integer"
+            },
+            "startCol": {
+              "description": "First grid column of the region (0-based, inclusive).",
+              "format": "int64",
+              "type": "integer"
+            },
+            "startRow": {
+              "description": "First grid row of the region (0-based, inclusive).",
+              "format": "int64",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "startRow",
+            "endRow",
+            "startCol",
+            "endCol"
+          ],
+          "type": "object"
+        },
+        "TileAppParam": {
+          "anyOf": [
+            {
+              "description": "Process id of the app to tile.",
+              "format": "int32",
+              "type": "integer"
+            },
+            {
+              "description": "App name (exact match first, else substring; case-insensitive).",
+              "type": "string"
+            }
+          ]
+        }
+      },
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "properties": {
+        "app": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TileAppParam"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "App to tile — pid or name. Defaults to the frontmost window."
+        },
+        "cells": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/CellsParams"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Explicit grid cells — use instead of preset."
+        },
+        "monitor": {
+          "description": "Monitor to tile on: canonical label from list_monitors (e.g.\n\"DELL U2720Q (left)\"), a monitor index, or \"current\". Defaults to the\ndisplay holding the target window.",
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "preset": {
+          "description": "Named region: full, left_half, right_half, top_half, bottom_half,\ntop_left, top_right, bottom_left, bottom_right.",
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "type": "object"
+    },
+    "name": "tile_window"
+  }
+]

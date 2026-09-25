@@ -1,307 +1,113 @@
+<div align="center">
+
+<img src="design/icon-d-tricolor.png" width="128" alt="Vindue app icon">
+
 # Vindue
 
-An open-source grid window tiler for macOS — the Divvy drag-a-grid interaction,
-drivable by scripts and AI. Built with Tauri 2 + React/TS.
-("Divvy" is a Mizage trademark; this project is unaffiliated.)
+**Grid window tiling for macOS — the Divvy drag-a-grid interaction, drivable by scripts and AI.**
 
-- Website & docs: https://msukmanowsky.github.io/vindue/ (vindue.app once registered)
-- Roadmap: https://msukmanowsky.github.io/vindue/docs/reference/roadmap
+[![CI](https://github.com/msukmanowsky/vindue/actions/workflows/ci.yml/badge.svg)](https://github.com/msukmanowsky/vindue/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-Pre-1.0 note: config.json carries a single schema revision (`version: 1`) — on
-mismatch the config is reseeded to defaults (no migrations yet; `seed_config`
-marks the seam where they'll go).
+[Docs](https://msukmanowsky.github.io/vindue/) · [Roadmap](https://msukmanowsky.github.io/vindue/docs/reference/roadmap) · [Changelog](CHANGELOG.md)
+
+</div>
+
+An open-source menu-bar tiler built with Tauri 2 + React/TS. ("Divvy" is a
+Mizage trademark; this project is unaffiliated.)
 
 ## What it does
 
-A menu-bar daemon with one interaction loop:
+1. Focus any window, on any display
+2. Left-click the menu-bar icon (or an optional global hotkey — none by
+   default) → a 6×6 grid panel appears **on every display**, centered and
+   sized to that display's aspect ratio, with the target window **outlined in
+   blue** and the app's icon + name in the header
+3. Drag across cells → the window moves/resizes to that region; the panel
+   auto-dismisses (**Esc** cancels)
 
-1. Focus any window (on any display)
-2. **Left-click the menu bar icon** (or press your global hotkey, if you've recorded
-   one in Settings — there is none by default) → a 6×6 grid panel appears
-    **on every display — centered and sized to that display's aspect ratio** — with the
-    panel on the target's display focused; each header shows the **app's icon + name**,
-    and the target window is **outlined in blue** so you can see exactly what will be resized
-3. **Drag** across grid cells → the window is moved/resized to that region (work area, margins applied)
-4. The panel always auto-dismisses after applying. **Esc** dismisses without applying.
+Panels are true modals: clicking away dismisses them, the outline follows the
+target live, and the header retargets another app without dismissing.
 
-The panels are true modals: clicking any other app's window dismisses them
-(~250ms). Move or resize the target and the outline follows. To target a
-different app without dismissing, click the app name in the header and pick
-from the running-apps list (with icons).
+- **Shortcuts** — save any drag to a key (color-coded, hover to preview);
+  pinned to a display or relative like Divvy → [docs](https://msukmanowsky.github.io/vindue/docs/guide/shortcuts)
+- **Multi-monitor** — canonical display labels (positional suffixes for
+  identical twins); display-bound shortcuts go beyond Divvy → [docs](https://msukmanowsky.github.io/vindue/docs/guide/multi-monitor)
+- **Settings** — schema-validated form + raw-JSON views of config.json; grid
+  resizes rescale saved shortcuts proportionally → [docs](https://msukmanowsky.github.io/vindue/docs/guide/settings)
+- **Scriptable + AI-drivable** — loopback HTTP API and an MCP server on one
+  port (below)
 
-## Shortcuts
+## Install
 
-Any assignable key can save a grid region — digits `0-9` plus `` ` `` `-` `=` `[` `]` `\` `;` `'` `,` `.` `/`
-(physical key codes, so they work regardless of layout; both `` ` `` and `~` count as the same key).
+Universal (Apple Silicon + Intel) dmgs on the **[Releases page](https://github.com/msukmanowsky/vindue/releases)** —
+v0.1.0 is in release-candidate stage; until it lands, [build from source](#run-from-source).
 
-- **Assign**: while the panels are open, press an unassigned key (or **Option+key** to
-  reassign) → the footer shows *assigning* with the key's color chip → your next drag is
-  **saved and applied in one motion** — the window moves immediately and the panel closes.
-  By default assignments are **pinned** to the display
-  whose panel you're on — click display B's panel, press the key, drag, and the shortcut
-  belongs to B. Settings → Shortcuts can switch assignments to **relative** (no display
-  binding; the shortcut follows the panel at apply time, like Divvy).
-- **Apply**: press an assigned key while the panel is open → the target window snaps to
-  the saved region **on its saved display**, even if that's not where the panel is
-  (e.g. `1`/`2` = left/right halves of display A, `3` = left half of display B).
-- **Display**: each key gets a unique high-contrast color. Keys belonging to the current
-  display show a colored chip on their region's anchor cell — **hover a chip** to see its
-  region outlined in a thin dashed line. Keys bound to other displays are listed in the footer
-  (*other displays: `3` DELL U2720Q …*) and still fire.
-- Shortcuts persist in config.json and are editable in Settings (monitor dropdown +
-  mini-grid region editor).
+Every release carries two independent proofs:
 
-## Multi-monitor
+```sh
+shasum -a 256 Vindue_x.y.z_universal.dmg                      # must match the SHA256SUMS.txt asset
+gh attestation verify Vindue_x.y.z_universal.dmg --owner msukmanowsky   # SLSA provenance: exact commit + this repo's CI identity
+```
 
-- Panels open on **every display at once**, each centered and sized so its grid mirrors
-  that display's aspect ratio (Divvy shows a single panel, on the focused window's
-  display). Drag on any panel to place the target on that display; key focus lands on
-  the target's display and clicking another panel moves focus there.
-- Monitor-bound shortcuts (above) go beyond Divvy, whose shortcuts are always relative
-  to the current screen.
+Release builds are Apple Developer ID-signed + notarized (Gatekeeper-clean)
+and MIT-licensed — and you can always build the tagged commit yourself.
+Details: [Verifying your download](https://msukmanowsky.github.io/vindue/docs/getting-started/intro).
 
-### Display identification
+### Accessibility permission
 
-macOS gives apps **no stable hardware identity for displays**, so Vindue saves
-`{name, index}` per shortcut and resolves best-effort. Why not an ID:
+Moving other apps' windows uses the macOS Accessibility API — grant it once
+(signed releases keep the grant across updates). The panel shows exactly which
+file needs the grant and detects it automatically: [setup guide](https://msukmanowsky.github.io/vindue/docs/getting-started/quickstart) ·
+[troubleshooting](https://msukmanowsky.github.io/vindue/docs/reference/troubleshooting)
+(incl. `AXError -25211` and coexisting with macOS's own tiling).
 
-- `CGDirectDisplayID` is assigned per *connection* — it changes on replug/reboot/dock
-  cycles, so it can't persist in a config file.
-- The closest thing to a hardware ID is the display's **EDID** data via IORegistry
-  (what BetterDisplay/`displayplacer` read): manufacturer + product code + serial.
-  But the serial is frequently zero or duplicated — two identical monitors typically
-  report *identical* EDID — so it's stable-ish yet still not unique-ish, and it costs
-  custom IOKit code.
-- Displays have no MAC address; that's a network-interface concept.
-- The **localized name** (`NSScreen.localizedName` — what System Settings shows, e.g.
-  *DELL U2720Q*) is stable across replug/reboot and human-meaningful. It's keyed by
-  `CGDisplayModelNumber` — the number tao embeds in its `Monitor #<n>` placeholder names.
-
-Every identifier bottoms out at the same failure mode: **two identical displays are
-ambiguous to any API**. Vindue's answer is positional labeling:
-
-- When several connected displays share a name, they're suffixed by their position in
-  the arrangement macOS persists: `DELL U2720Q (left)` / `(right)` (or `(middle)` for
-  triplets, `(left-to-right #N)` for four+; vertical stacks tiebreak on y). The labels
-  appear in the Settings dropdown and are recomputed identically at apply time, so
-  "left" means whatever display currently occupies the left slot — matching what you
-  see in System Settings. Rearranging displays re-labels them; that's the most durable
-  signal macOS exposes.
-
-Resolution chain at apply time: **label match** (incl. positional suffixes) →
-**bare-name match** (suffixed ref whose twin is unplugged) → raw tao name (legacy
-entries) → **index** → current display, with the panel footer saying so. Settings also
-offers *Relative (follows panel)* per shortcut, like Divvy.
-
-## Settings
-
-Tray menu → **Settings…** (or the ⚙ button in the panel). Two views of the same
-config.json, switchable at the top-right:
-
-- **Form** (default): sectioned layout — **Grid** (rows/columns 1-12, window
-  gap, and screen margins as inputs arranged around a monitor glyph),
-  **Keybindings** (*Open Vindue* — a click-to-record hotkey field: click,
-  press a modifier+key combination, done. The live hotkey is paused while
-  recording, so pressing the current combination records it instead of
-  firing; Esc cancels, blur exits. Opinionated admissibility rules reject
-  bare keys, Shift-only, Cmd/Alt+text-key, and macOS-reserved combos like
-  Cmd+Tab / Cmd+Space, with the reason shown on the spot. ✕ Clear removes
-  the hotkey entirely — the panel stays reachable from the menu bar, and
-  **no hotkey is the default**),
-  **Shortcuts** (how panel assignments save — **Pinned** to the display
-  they're created on, the default, or **Relative**, following the panel at
-  apply time — plus the shortcut list with color chip, monitor dropdown,
-  drag-in-mini-grid region editor, and add-by-pressing-a-key; new shortcuts
-  from Add are relative, pinnable per row), and
-  **API** (enable toggle + port for the loopback control server, a
-  copyable MCP endpoint URL, and live listening status). A successful
-  **Save closes the window** — changes apply immediately; failures keep it
-  open with inline errors.
-- Resizing the grid **rescales saved shortcuts proportionally** (best
-  effort): "left half" of 6×6 becomes the left half of 8×8. JSON-view saves
-  remap only selections that no longer fit, leaving hand-adjusted ones alone.
-- **JSON**: raw config.json for hand-editing. The file's location sits above the
-  textarea, with **Copy** and **Open** (launches your default JSON editor).
-
-Both validate against the same Yup schema on save (unknown keys, out-of-range margins,
-malformed shortcuts, selections outside the grid → inline errors). Changing the hotkey
-re-registers it live, with best-effort conflict detection (Windows reports collisions
-reliably; macOS often does not — same caveat Divvy documents).
-
-There is no Reload button: while the window is open, config.json is watched
-(file-stamp poll) and external edits — by hand or by assigning shortcuts from
-the panel — reload automatically. If you have unsaved edits when the file
-changes, nothing is clobbered; you choose to overwrite (Save) or discard.
-
-Left-click the tray icon opens the panel; right-click gives *Open* / *Settings…* / *Quit*. No Dock icon (menu-bar-only app).
-
-## Run it
+## Run from source
 
 ```sh
 npm install
 npm run tauri dev                # development
-npm run tauri build -- --debug   # or use the built .app:
-open src-tauri/target/debug/bundle/macos/Vindue.app
+npm run tauri build -- --debug   # or build the .app
 ```
 
-### Verifying a download
-
-Releases carry two independent proofs:
-
-1. **Checksum** — `shasum -a 256 Vindue_x.y.z_universal.dmg` must match the
-   `SHA256SUMS.txt` asset on the release.
-2. **Build provenance (SLSA)** — every dmg is attested via Sigstore in GitHub's
-   public transparency log, tying the file's digest to the exact tagged commit
-   and this repo's Actions identity:
-
-   ```sh
-   gh attestation verify Vindue_x.y.z_universal.dmg --owner msukmanowsky
-   ```
-
-The app itself is Apple Developer ID-signed and notarized (Gatekeeper checks on
-launch), and Vindue is MIT-licensed — you can always build the tagged commit
-yourself.
-
-### Accessibility permission (required)
-
-Moving other apps' windows uses the macOS Accessibility API. On first panel activation the app
-shows a banner with the **exact file that needs the grant** (the `.app` or the dev binary —
-they differ!) → **Grant access…** opens System Settings **and dismisses the panel** (so the
-live target tracker doesn't outline System Settings itself) → remove any old entries with "−",
-add the shown file ("+" then ⌘⇧G to paste the path, or drag it from Finder) and enable it →
-re-activate the panel; it detects the grant automatically.
-
-**Important:** ad-hoc signed builds get a new code-signing identity on **every rebuild**, so
-previous entries go permanently stale — toggling an old entry does nothing. Remove and
-re-add. This is macOS TCC behavior for unsigned apps, not a bug — and it is a **dev-build
-artifact only**: a properly signed release (Developer ID + notarization) has a stable
-identity, so end users grant once and the grant persists across app updates (same as Divvy).
-
-(The target outline and panel placement work *without* the grant — only applying
-regions needs it.)
-
-If an apply fails with **`AXError -25211` (kAXErrorAPIDisabled)**, the grant is
-missing or went stale mid-session (a rebuild replaced the running binary, or
-System Settings was toggled while Vindue was open) — it is *not* the target
-app's fault. The panel recovers on its own: the failed apply re-shows the grant
-banner and resumes auto-detection, so re-granting fixes it without re-activating.
-Check status any time with `curl -s 127.0.0.1:47725/api/v1/state | jq .axTrusted`.
-See [Troubleshooting](https://msukmanowsky.github.io/vindue/docs/reference/troubleshooting)
-for the full guide and what to include in a bug report.
-
-If you also use macOS's own tiling (hover the green button): its system
-overlay (WindowManager) can briefly sit above everything — Vindue looks past
-system windows like it to your real frontmost app, so the two coexist.
-
-## Config
-
-`~/Library/Application Support/com.oddinteractive.vindue/config.json` — edit in the
-Settings window; all changes apply immediately (the panel live-reloads on save; hotkey
-changes re-register live too). Top-level keys mirror the Settings UI sections 1:1.
-Defaults are no hotkey, zero gaps/margins, no shortcuts, API on:
-
-```json
-{
-  "version": 1,
-  "grid": {
-    "rows": 6,
-    "cols": 6,
-    "windowGap": { "width": 0, "height": 0 },
-    "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 }
-  },
-  "keybindings": { "openPanel": "" },
-  "shortcuts": {
-    "assignment": "pinned",
-    "keys": {
-      "Digit1": { "monitor": null, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } },
-      "Backquote": {
-        "monitor": { "name": "DELL U2720Q (left)", "index": 1 },
-        "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 5 }
-      }
-    }
-  },
-  "api": { "port": 47725, "enabled": true }
-}
-```
-
-- `grid.rows/cols` — 1-12; `grid.windowGap` — gap between adjacent placed windows (each inset by half); `grid.screenMargins` — screen-edge insets (0-300, physical px)
-- `keybindings.openPanel` — global panel toggle (parsed by tauri-plugin-global-shortcut, e.g. `Cmd+Shift+Space`, `Ctrl+Alt+D`); `""` = none — the tray icon always opens the panel
-- `shortcuts.assignment` — what a panel-mode assignment (key + drag) saves: `"pinned"` (default) binds it to the display it was created on; `"relative"` saves no monitor, so it follows the panel at apply time
-- `shortcuts.keys` — key code → `{ monitor, selection }`; `monitor: null` = relative to the panel's display; otherwise `{ name, index }` of the display it was assigned on (`name` = canonical label, see [Display identification](#display-identification)). Easiest created via assignment mode in the panel
-- `api` — the loopback HTTP/MCP server: `port` (1024-65535) and `enabled`
+Requirements and the contributor guide: [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## HTTP API
 
-With `api.enabled` (the default), Vindue serves a control API on
-`http://127.0.0.1:<api.port>` (default **47725**) — two faces on one server:
-REST for scripts and humans, [MCP](#mcp-ai-control) for AI clients.
-
-**Security model — no auth, by design.** The server binds to loopback only,
-allowlists the `Host` header (`127.0.0.1`/`localhost` — DNS-rebinding defense),
-and **rejects any request carrying `Origin` or `Sec-Fetch-Site` headers**:
-browsers always attach them (even on simple GETs), while curl/scripts/MCP
-clients never do — so a web page you visit cannot drive your windows. Anything
-that can already run code as your user can use this API; it grants no new
-capability. (Pinned by tests in `src-tauri/src/api.rs`.)
-
-REST endpoints (JSON in/out; errors are 400 + `{ "error": "…" }`):
-
-| Endpoint | What |
-|---|---|
-| `GET /api/v1/state` | Everything: AX trust, frontmost target, monitors (canonical labels), full config |
-| `POST /api/v1/tile` | The money shot — `{ preset }` or `{ cells }`, optional `monitor` (label/index/"current"), optional `app` (pid or name; default frontmost) |
-| `GET /api/v1/config` | Full config |
-| `PUT /api/v1/config/grid` | Merge-patch `rows`/`cols`/`windowGap`/`screenMargins` (saved shortcuts rescale proportionally) |
-| `PUT /api/v1/config/keybindings` | Merge-patch `{ "openPanel": "Cmd+Alt+S" }` ("" = clear) |
-| `PUT /api/v1/config/shortcuts/assignment` | `{ "assignment": "pinned" \| "relative" }` (bare string also accepted) |
-| `PUT /api/v1/config/api` | Merge-patch `{ port, enabled }` — rebinds the server itself |
-| `GET /api/v1/shortcuts` | Assignment mode + all key bindings |
-| `PUT /api/v1/shortcuts/{key}` | Create/update: `{ monitor: label \| null, selection: { startRow, endRow, startCol, endCol } }` |
-| `DELETE /api/v1/shortcuts/{key}` | Remove a binding (`{ "deleted": bool }`) |
-| `GET /api/v1/monitors` | Displays with canonical labels, positions, work areas, scale factors |
-| `GET /api/v1/apps` | Running apps: `{ pid, name }` — usable as `tile`'s `app` |
-| `GET /api/v1/target` | Current frontmost window snapshot |
+With `api.enabled` (the default), a control API serves on
+`http://127.0.0.1:47725` — REST for scripts and humans, MCP for AI clients,
+one server. **No auth, by design**: loopback-only bind, `Host` allowlist
+(DNS-rebinding defense), and rejection of any request carrying `Origin` or
+`Sec-Fetch-Site` — browsers always attach those, curl/scripts/MCP clients
+never do, so a web page you visit cannot drive your windows.
+([SECURITY.md](SECURITY.md); pinned by tests in `src-tauri/src/api.rs`.)
 
 ```sh
 curl -s 127.0.0.1:47725/api/v1/state | jq .
 curl -s -X POST 127.0.0.1:47725/api/v1/tile -d '{"preset":"left_half"}'
-curl -s -X POST 127.0.0.1:47725/api/v1/tile -d '{"preset":"top_right","app":"Safari","monitor":"DELL U2720Q (right)"}'
-curl -s -X POST 127.0.0.1:47725/api/v1/tile -d '{"cells":{"startRow":0,"endRow":2,"startCol":1,"endCol":4}}'
-curl -s -X PUT 127.0.0.1:47725/api/v1/shortcuts/Digit2 -d '{"monitor":null,"selection":{"startRow":0,"endRow":5,"startCol":3,"endCol":5}}'
 ```
 
-Presets: `full`, `left_half`, `right_half`, `top_half`, `bottom_half`,
-`top_left`, `top_right`, `bottom_left`, `bottom_right` — computed
-proportionally (`half(n) = max(1, round(n/2))`), so they work on any grid.
-`cells` are inclusive 0-based indices and must fit the current grid.
-Tiling needs the same Accessibility grant as the panel; the error message
-says so when it's missing.
+14 endpoints — state, tile (9 presets or explicit cells), config CRUD,
+shortcut CRUD, monitors, apps, target, and the server's own live OpenAPI spec
+→ **[full reference](https://msukmanowsky.github.io/vindue/docs/reference/http-api)** ·
+[curl tutorial](https://msukmanowsky.github.io/vindue/docs/guide/scripting-with-curl)
 
 ## MCP (AI control)
 
 The same server speaks the [Model Context Protocol](https://modelcontextprotocol.io)
-at **`/mcp`** (streamable HTTP, via the official MCP Rust SDK) — so Claude
-Code, Claude Desktop, or any MCP client can drive Vindue as a tool.
+at `/mcp` (streamable HTTP, official MCP Rust SDK) — 12 tools for Claude Code,
+Claude Desktop, or any MCP client: tile windows, manage shortcuts, tune the
+grid, list monitors and apps. One implementation, two protocols: every tool
+delegates to the same handler functions as REST, and clients discover
+everything live (`tools/list`, plus usage instructions in the `initialize`
+response).
 
 ```sh
 claude mcp add --transport http vindue http://127.0.0.1:47725/mcp
 ```
 
-Tools (settings + tiling; no UI control by design):
-
-| Tool | What |
-|---|---|
-| `get_state` | AX trust, frontmost window, monitors + labels, full config — call first |
-| `tile_window` | preset or explicit cells; optional `monitor` (label/index/"current") and `app` (pid/name) |
-| `list_shortcuts` / `set_shortcut` / `delete_shortcut` | manage key → grid-region bindings |
-| `get_config` / `set_grid` / `set_margins` | read/tune the grid (shortcuts rescale on resize) |
-| `set_hotkey` / `set_shortcut_assignment` | global open-panel hotkey; pinned-vs-relative default |
-| `list_monitors` / `list_apps` | canonical display labels; running apps for `tile_window` |
-
-Every tool delegates to the exact same handler functions as the REST API —
-one implementation, two protocols. The server advertises usage instructions
-in its `initialize` response, so clients learn the workflow (check
-`get_state`, use canonical labels, cells are inclusive) without docs.
+→ **[MCP reference](https://msukmanowsky.github.io/vindue/docs/reference/mcp)** ·
+[tutorial: tile with Claude](https://msukmanowsky.github.io/vindue/docs/guide/tile-with-claude)
 
 ## Commands
 
@@ -332,6 +138,7 @@ drift on either side fails the build.
 - Mixed-DPI multi-monitor: outline/placement are computed per-monitor but not yet torture-tested
 - Monitor identity is name+index — rearranging displays in System Settings can soften a binding to index-fallback (footer flags it)
 - The control API has no auth token — loopback bind + Host allowlist + browser-request rejection are the whole model (fine for local single-user; anything running as you can already do all of this)
+- Config schema is single-revision (`version: 1`) — on mismatch the config reseeds to defaults; `seed_config` marks the seam where migrations will go
 
 ## Repository layout
 
@@ -346,7 +153,8 @@ design/       brand assets — icon masters + menu-bar glyph
 
 ## Architecture: framework vs custom
 
-Everything except one module is Tauri framework/plugins:
+Everything except one module is Tauri framework/plugins (expanded version:
+[architecture docs](https://msukmanowsky.github.io/vindue/docs/reference/architecture)):
 
 | Piece | How |
 |---|---|

@@ -1,5 +1,5 @@
 ---
-sidebar_position: 1
+sidebar_position: 3
 title: HTTP API
 description: The loopback REST control API — endpoints, curl examples, and the security model.
 ---
@@ -8,7 +8,7 @@ description: The loopback REST control API — endpoints, curl examples, and the
 
 With `api.enabled` (the default), Vindue serves a control API on
 `http://127.0.0.1:<api.port>` (default **47725**) — two faces on one server:
-REST for scripts and humans, [MCP](./mcp) for AI clients.
+REST for scripts and humans, [MCP](../mcp) for AI clients.
 
 ## Security model — no auth, by design
 
@@ -25,21 +25,14 @@ new capability. (Pinned by tests in `src-tauri/src/api.rs`.)
 
 JSON in/out; errors are `400` + `{ "error": "…" }`.
 
-| Endpoint | What |
-|---|---|
-| `GET /api/v1/state` | Everything: AX trust, frontmost target, monitors (canonical labels), full config |
-| `POST /api/v1/tile` | The money shot — `{ preset }` or `{ cells }`, optional `monitor` (label/index/"current"), optional `app` (pid or name; default frontmost) |
-| `GET /api/v1/config` | Full config |
-| `PUT /api/v1/config/grid` | Merge-patch `rows`/`cols`/`windowGap`/`screenMargins` (saved shortcuts rescale proportionally) |
-| `PUT /api/v1/config/keybindings` | Merge-patch `{ "openPanel": "Cmd+Alt+S" }` (`""` = clear) |
-| `PUT /api/v1/config/shortcuts/assignment` | `{ "assignment": "pinned" \| "relative" }` (bare string also accepted) |
-| `PUT /api/v1/config/api` | Merge-patch `{ port, enabled }` — rebinds the server itself |
-| `GET /api/v1/shortcuts` | Assignment mode + all key bindings |
-| `PUT /api/v1/shortcuts/{key}` | Create/update: `{ monitor: label \| null, selection: { startRow, endRow, startCol, endCol } }` |
-| `DELETE /api/v1/shortcuts/{key}` | Remove a binding (`{ "deleted": bool }`) |
-| `GET /api/v1/monitors` | Displays with canonical labels, positions, work areas, scale factors |
-| `GET /api/v1/apps` | Running apps: `{ pid, name }` — usable as `tile`'s `app` |
-| `GET /api/v1/target` | Current frontmost window snapshot |
+The full per-endpoint reference — parameters, request/response schemas,
+sample calls — is **generated from the Rust source** (utoipa annotations on
+the axum handlers) and pinned by a CI drift gate, so it always matches the
+code: **[Vindue control API reference →](./vindue-control-api.info.mdx)**
+
+Operations are grouped as *state* (live app state), *tiling*, *config*
+(merge-patch sections), *shortcuts* (key → region bindings), and *meta* — the
+server also serves its own live spec at `GET /api/v1/openapi.json`.
 
 ## Examples
 
@@ -69,4 +62,4 @@ so when it's missing.
 
 Ideas: shell aliases per layout, a "meeting mode" script that arranges
 browser + notes + terminal, Shortcuts.app automations, or
-[letting Claude do it](./tutorials/tile-with-claude).
+[letting Claude do it](../../guide/tile-with-claude).

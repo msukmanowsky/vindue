@@ -37,6 +37,7 @@ schemars = "1"
 # axum-based and nests into the same router.
 axum = "0.8"
 rmcp = { version = "3", features = ["server", "transport-streamable-http-server"] }
+utoipa = "5"
 tokio = { version = "1", features = ["net", "rt", "macros", "sync", "time"] }
 
 [dev-dependencies]

@@ -27,6 +27,7 @@ use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use tauri::Manager;
 use tauri_plugin_store::StoreExt;
+use utoipa::{OpenApi, ToSchema};
 
 use crate::config::{self, ApiCfg};
 
@@ -34,6 +35,16 @@ pub type McpService = rmcp::transport::streamable_http_server::StreamableHttpSer
     crate::mcp::VindueMcp,
     rmcp::transport::streamable_http_server::session::local::LocalSessionManager,
 >;
+
+/// The error body every REST endpoint returns on `400`. Docs schema only:
+/// `respond()` builds this shape inline (pinned by the tests below), and the
+/// struct exists so utoipa can describe it — hence the dead-code allowance.
+#[derive(ToSchema)]
+#[allow(dead_code)]
+pub struct ErrorBody {
+    /// Human-readable reason for the failure.
+    pub error: String,
+}
 
 // ---------- server lifecycle ----------
 
@@ -376,7 +387,7 @@ pub fn state_json(app: &tauri::AppHandle) -> Result<Value, String> {
 
 // ---------- tiling ----------
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 #[serde(rename_all = "camelCase")]
 pub struct TileReq {
     /// Named region: full, left_half, right_half, top_half, bottom_half,
@@ -392,10 +403,12 @@ pub struct TileReq {
     pub app: Option<TileAppRef>,
 }
 
-#[derive(Deserialize)]
+#[derive(Deserialize, ToSchema)]
 #[serde(untagged)]
 pub enum TileAppRef {
+    /// Process id of the app to tile.
     Pid(i32),
+    /// App name (exact match first, else substring; case-insensitive).
     Name(String),
 }
 
@@ -543,38 +556,157 @@ fn respond(r: Result<Value, String>) -> Response {
     }
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/state",
+    tag = "state",
+    operation_id = "getState",
+    summary = "Live app state",
+    responses(
+        (status = 200, description = "axTrusted, frontmost target window, monitors with canonical labels, and the full config", body = Object),
+        (status = 400, description = "system query failed", body = ErrorBody),
+    ),
+)]
 async fn h_state(State(app): State<tauri::AppHandle>) -> Response {
     respond(blocking(app, state_json).await)
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/config",
+    tag = "config",
+    operation_id = "getConfig",
+    summary = "Read full config",
+    responses(
+        (status = 200, description = "Full config: grid, keybindings, shortcuts, api", body = Object),
+        (status = 400, description = "config store read failed", body = ErrorBody),
+    ),
+)]
 async fn h_get_config(State(app): State<tauri::AppHandle>) -> Response {
     respond(blocking(app, read_full_config).await)
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/monitors",
+    tag = "state",
+    operation_id = "getMonitors",
+    summary = "List monitors",
+    responses(
+        (status = 200, description = "Every display: index, canonical label, name, position, size, workArea, scaleFactor", body = Object),
+        (status = 400, description = "system query failed", body = ErrorBody),
+    ),
+)]
 async fn h_monitors(State(app): State<tauri::AppHandle>) -> Response {
     respond(blocking(app, |a| monitors_with_labels(a).map(|m| mons_json(&m))).await)
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/apps",
+    tag = "state",
+    operation_id = "getApps",
+    summary = "List running apps",
+    responses(
+        (status = 200, description = "Running apps that own windows: [{ pid, name }] — usable as tile's app parameter", body = Object),
+        (status = 400, description = "main-thread dispatch failed", body = ErrorBody),
+    ),
+)]
 async fn h_apps(State(app): State<tauri::AppHandle>) -> Response {
     respond(blocking(app, apps_json).await)
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/target",
+    tag = "state",
+    operation_id = "getTarget",
+    summary = "Frontmost window",
+    responses(
+        (status = 200, description = "Frontmost window snapshot (pid, app name, bounds), or null if none", body = Object),
+        (status = 400, description = "system query failed", body = ErrorBody),
+    ),
+)]
 async fn h_target(State(app): State<tauri::AppHandle>) -> Response {
     respond(blocking(app, target_json).await)
 }
 
+/// This server's own OpenAPI document — generated from the compiled handlers
+/// (utoipa), so it always describes the running binary exactly. The committed
+/// website copy is kept byte-identical by the CI drift gate.
+#[utoipa::path(
+    get,
+    path = "/api/v1/openapi.json",
+    tag = "meta",
+    operation_id = "getOpenapi",
+    summary = "This OpenAPI document",
+    responses(
+        (status = 200, description = "OpenAPI 3.1 spec for this server", body = Object),
+    ),
+)]
+async fn h_openapi() -> Response {
+    Json(ApiDoc::openapi()).into_response()
+}
+
+#[utoipa::path(
+    post,
+    path = "/api/v1/tile",
+    tag = "tiling",
+    operation_id = "tile",
+    summary = "Tile a window",
+    request_body = TileReq,
+    responses(
+        (status = 200, description = "Applied rect, monitor label, and target window", body = Object),
+        (status = 400, description = "Unknown preset, cells outside the grid, no target window or monitor match, or Accessibility not granted", body = ErrorBody),
+    ),
+)]
 async fn h_tile(State(app): State<tauri::AppHandle>, Json(req): Json<TileReq>) -> Response {
     respond(blocking(app, move |a| tile(a, req)).await)
 }
 
+#[utoipa::path(
+    get,
+    path = "/api/v1/shortcuts",
+    tag = "shortcuts",
+    operation_id = "getShortcuts",
+    summary = "List shortcuts",
+    responses(
+        (status = 200, description = "Assignment mode plus every key → { monitor, selection } binding", body = Object),
+        (status = 400, description = "config store read failed", body = ErrorBody),
+    ),
+)]
 async fn h_get_shortcuts(State(app): State<tauri::AppHandle>) -> Response {
     respond(blocking(app, |a| read_full_config(a).map(|c| c["shortcuts"].clone())).await)
 }
 
+#[utoipa::path(
+    put,
+    path = "/api/v1/config/grid",
+    tag = "config",
+    operation_id = "putGrid",
+    summary = "Update grid",
+    request_body(content = Object, description = "Merge-patch: any subset of rows/cols (1-12), windowGap {width,height}, screenMargins {top,right,bottom,left} (px 0-300). Stored shortcuts rescale proportionally."),
+    responses(
+        (status = 200, description = "The full config after the change", body = Object),
+        (status = 400, description = "validation failed (shape or ranges)", body = ErrorBody),
+    ),
+)]
 async fn h_put_grid(State(app): State<tauri::AppHandle>, Json(patch): Json<Value>) -> Response {
     respond(blocking(app, move |a| patch_config(a, "grid", patch)).await)
 }
 
+#[utoipa::path(
+    put,
+    path = "/api/v1/config/keybindings",
+    tag = "config",
+    operation_id = "putKeybindings",
+    summary = "Update keybindings",
+    request_body(content = Object, description = "Merge-patch { \"openPanel\": \"Cmd+Alt+S\" } — accelerator string parsed by tauri-plugin-global-shortcut; \"\" clears the global open-panel hotkey."),
+    responses(
+        (status = 200, description = "The full config after the change", body = Object),
+        (status = 400, description = "validation failed or hotkey registration rejected", body = ErrorBody),
+    ),
+)]
 async fn h_put_keybindings(
     State(app): State<tauri::AppHandle>,
     Json(patch): Json<Value>,
@@ -582,6 +714,18 @@ async fn h_put_keybindings(
     respond(blocking(app, move |a| patch_config(a, "keybindings", patch)).await)
 }
 
+#[utoipa::path(
+    put,
+    path = "/api/v1/config/shortcuts/assignment",
+    tag = "config",
+    operation_id = "putShortcutAssignment",
+    summary = "Update shortcut assignment",
+    request_body(content = Object, description = "{ \"assignment\": \"pinned\" | \"relative\" } — a bare string body is also accepted. pinned = new shortcuts bind to the display they are created on; relative = they follow the panel's display at apply time."),
+    responses(
+        (status = 200, description = "The full config after the change", body = Object),
+        (status = 400, description = "assignment value not \"pinned\" or \"relative\"", body = ErrorBody),
+    ),
+)]
 async fn h_put_assignment(
     State(app): State<tauri::AppHandle>,
     Json(patch): Json<Value>,
@@ -594,10 +738,37 @@ async fn h_put_assignment(
     respond(blocking(app, move |a| patch_config(a, "shortcuts", patch)).await)
 }
 
+#[utoipa::path(
+    put,
+    path = "/api/v1/config/api",
+    tag = "config",
+    operation_id = "putApiConfig",
+    summary = "Update API settings",
+    request_body(content = Object, description = "Merge-patch { port (1024-65535), enabled } — rebinds this server itself; the in-flight response flushes before the swap."),
+    responses(
+        (status = 200, description = "The full config after the change", body = Object),
+        (status = 400, description = "validation failed (port range, shape)", body = ErrorBody),
+    ),
+)]
 async fn h_put_api(State(app): State<tauri::AppHandle>, Json(patch): Json<Value>) -> Response {
     respond(blocking(app, move |a| patch_config(a, "api", patch)).await)
 }
 
+#[utoipa::path(
+    put,
+    path = "/api/v1/shortcuts/{key}",
+    tag = "shortcuts",
+    operation_id = "putShortcut",
+    summary = "Set a shortcut",
+    params(
+        ("key" = String, Path, description = "KeyboardEvent.code of the key, e.g. Digit1, KeyT, Backquote", example = "Digit1"),
+    ),
+    request_body(content = Object, description = "{ monitor: canonical label | index | null (relative — follows the panel's display), selection: { startRow, endRow, startCol, endCol } } — cells inclusive, must fit the current grid"),
+    responses(
+        (status = 200, description = "The full config after the change", body = Object),
+        (status = 400, description = "key not assignable, or definition invalid / out of grid", body = ErrorBody),
+    ),
+)]
 async fn h_put_shortcut(
     State(app): State<tauri::AppHandle>,
     Path(key): Path<String>,
@@ -606,6 +777,20 @@ async fn h_put_shortcut(
     respond(blocking(app, move |a| put_shortcut_key(a, &key, def)).await)
 }
 
+#[utoipa::path(
+    delete,
+    path = "/api/v1/shortcuts/{key}",
+    tag = "shortcuts",
+    operation_id = "deleteShortcut",
+    summary = "Delete a shortcut",
+    params(
+        ("key" = String, Path, description = "KeyboardEvent.code of the key", example = "Digit1"),
+    ),
+    responses(
+        (status = 200, description = "{ \"deleted\": bool } — whether the binding existed", body = Object),
+        (status = 400, description = "config commit failed", body = ErrorBody),
+    ),
+)]
 async fn h_delete_shortcut(
     State(app): State<tauri::AppHandle>,
     Path(key): Path<String>,
@@ -619,6 +804,46 @@ async fn h_delete_shortcut(
 async fn h_mcp(Extension(svc): Extension<Arc<McpService>>, req: Request) -> Response {
     svc.handle(req).await.into_response()
 }
+
+/// The OpenAPI document for the REST face — assembled from the annotated
+/// handlers above. Served live at GET /api/v1/openapi.json and written to
+/// website/docs/reference/generated/openapi.json by the docgen bin (the CI
+/// drift gate keeps the two identical, and the Docusaurus site renders its
+/// endpoint pages from the committed copy).
+#[derive(OpenApi)]
+#[openapi(
+    info(
+        title = "Vindue control API",
+        version = "v1",
+        description = "Loopback HTTP control API for the Vindue macOS window tiler.
+
+**Security model — no auth, by design.** The server binds `127.0.0.1` only, allowlists the `Host` header (`127.0.0.1`/`localhost` — DNS-rebinding defense), and rejects any request carrying `Origin` or `Sec-Fetch-Site` headers: browsers always attach them, curl/scripts/MCP clients never do — so a web page cannot drive your windows. Anything that can run code as your user can use this API; it grants no new capability.
+
+Served on `api.port` (default **47725**). All endpoints take and return JSON; `curl -d` works without setting Content-Type. Errors are `400` + `{ \"error\": \"…\" }`. The MCP endpoint (`/mcp`) shares this server — its tools delegate to the same handlers; see the MCP tools reference for that face.
+
+Tiling requires the macOS Accessibility grant; the error says so when it is missing.",
+        license(name = "MIT", url = "https://github.com/msukmanowsky/vindue/blob/main/LICENSE"),
+    ),
+    servers(
+        (url = "http://127.0.0.1:47725", description = "loopback — the actual port comes from config api.port"),
+    ),
+    paths(
+        h_state, h_target, h_monitors, h_apps,
+        h_tile,
+        h_get_config, h_put_grid, h_put_keybindings, h_put_assignment, h_put_api,
+        h_get_shortcuts, h_put_shortcut, h_delete_shortcut,
+        h_openapi,
+    ),
+    components(schemas(TileReq, TileAppRef, config::Selection, ErrorBody)),
+    tags(
+        (name = "state", description = "Live app state: target window, monitors, running apps"),
+        (name = "tiling", description = "Move/resize windows onto the grid"),
+        (name = "config", description = "Read and patch config sections"),
+        (name = "shortcuts", description = "Key → grid-region bindings"),
+        (name = "meta", description = "Self-description"),
+    ),
+)]
+pub struct ApiDoc;
 
 fn router(app: tauri::AppHandle) -> Router {
     let mcp_svc = Arc::new(crate::mcp::service(app.clone()));
@@ -638,6 +863,7 @@ fn router(app: tauri::AppHandle) -> Router {
         .route("/monitors", get(h_monitors))
         .route("/apps", get(h_apps))
         .route("/target", get(h_target))
+        .route("/openapi.json", get(h_openapi))
         .layer(middleware::from_fn(json_content));
     Router::new()
         .nest("/api/v1", rest)

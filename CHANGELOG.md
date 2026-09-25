@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- Generated API documentation: the REST reference (OpenAPI 3.1, from `utoipa`
+  annotations on the axum handlers) and the MCP tool catalog (from the rmcp
+  router) are now generated from the Rust source, rendered into the docs site,
+  pinned by CI drift gates, served live at `GET /api/v1/openapi.json`, and
+  attached to every release as `openapi.json` + `mcp-tools.json` assets.
+
 ## [0.1.0-rc.1] - 2026-09-24
 
 Initial release.

@@ -1,0 +1,30 @@
+#!/bin/sh
+# Docs drift hook — the local half of the generated-API-docs contract.
+#
+# When a commit stages changes to the API surface (REST handlers, MCP tools,
+# the doc-artifact helpers, or crate deps), regenerate the committed doc
+# artifacts and stage them, so docs never lag the code. CI enforces the same
+# invariant for everyone (ci.yml regenerates + fails on diff); this hook just
+# saves the red-push round trip.
+#
+# Setup (once per clone):  git config core.hooksPath hooks
+set -e
+
+root="$(git rev-parse --show-toplevel)"
+
+if git diff --cached --name-only | grep -qE '^src-tauri/(src/(api|mcp|lib)\.rs|Cargo\.toml)$'; then
+  echo "pre-commit: API surface staged — regenerating doc artifacts…"
+  (cd "$root/src-tauri" && cargo run --quiet --bin docgen)
+  if [ -d "$root/website/node_modules" ]; then
+    # Explicit id, never "all": the plugin's "all" path is fire-and-forget
+    # (forEach(async …)) and can exit 0 without writing anything. Clean first
+    # so the staged pages are proven reproducible from the committed spec.
+    (cd "$root/website" && npm run --silent clean-api-docs -- vindue && npm run --silent gen-api-docs -- vindue)
+    git add website/docs/reference/generated website/docs/reference/http-api
+    echo "pre-commit: regenerated + staged website/docs/reference/{generated,http-api}"
+  else
+    echo "pre-commit: website/node_modules missing — skipped MDX render."
+    echo "pre-commit: finish with: (cd website && npm install && npm run gen-api-docs -- all)"
+    git add website/docs/reference/generated
+  fi
+fi

@@ -1,0 +1,1 @@
+{"title":"Body","body":{"content":{"application/json":{"schema":{"type":"object"}}},"description":"Merge-patch: any subset of rows/cols (1-12), windowGap {width,height}, screenMargins {top,right,bottom,left} (px 0-300). Stored shortcuts rescale proportionally.","required":true}}

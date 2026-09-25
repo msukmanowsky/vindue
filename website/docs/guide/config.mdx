@@ -51,7 +51,7 @@ hotkey, zero gaps/margins, no shortcuts, API on:
 | `shortcuts.assignment` | What a panel-mode assignment (key + drag) saves: `"pinned"` (default) binds it to the display it was created on; `"relative"` saves no monitor, so it follows the panel at apply time |
 | `shortcuts.keys` | Key code → `{ monitor, selection }`. `monitor: null` = relative to the panel's display; otherwise `{ name, index }` of the display it was assigned on (`name` = [canonical label](./multi-monitor#canonical-labels)). Easiest created via assignment mode in the panel |
 | `api.port` | Loopback server port, 1024–65535 (default 47725) |
-| `api.enabled` | Serve the [HTTP API + MCP](../automation/http-api) at all |
+| `api.enabled` | Serve the [HTTP API + MCP](../reference/http-api/index.mdx) at all |
 
 Key codes are `KeyboardEvent.code` values (physical positions): `Digit1`,
 `Backquote`, `Minus`, `Semicolon`, … — layout-independent.

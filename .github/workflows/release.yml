@@ -50,6 +50,8 @@ jobs:
             **Verify this download** (details: [Verifying a download](https://github.com/msukmanowsky/vindue#verifying-a-download)):
             - `shasum -a 256 <dmg>` must match the `SHA256SUMS.txt` asset below
             - `gh attestation verify <dmg> --owner msukmanowsky` proves it was built from this tag's commit by this repo's CI
+
+            API surface for this release: the `openapi.json` + `mcp-tools.json` assets — diff them across releases to review API changes.
           releaseDraft: true
           # Semver convention: a hyphenated tag (v0.1.0-beta.1, v0.1.0-rc.1) is
           # automatically flagged Pre-release — orange badge, excluded from
@@ -75,6 +77,17 @@ jobs:
           cat SHA256SUMS.txt
           gh release upload "${{ github.ref_name }}" SHA256SUMS.txt --clobber
           echo "dmg=$dmg" >> "$GITHUB_OUTPUT"
+
+      # The tag's machine-readable API surface — the same committed files the
+      # docs site renders (the CI drift gates keep them identical to the
+      # code). Review a release's API:
+      #   gh release download <tag> --pattern '*.json'
+      - name: Publish API spec snapshots
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          cd website/docs/reference/generated
+          gh release upload "${{ github.ref_name }}" openapi.json mcp-tools.json --clobber
 
       # Supply-chain transparency, part 2: SLSA Build L3 provenance. Sigstore-
       # signed statement tying the dmg's digest to the exact commit + this

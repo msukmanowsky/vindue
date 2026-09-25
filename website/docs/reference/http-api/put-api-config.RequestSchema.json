@@ -1,0 +1,1 @@
+{"title":"Body","body":{"content":{"application/json":{"schema":{"type":"object"}}},"description":"Merge-patch { port (1024-65535), enabled } — rebinds this server itself; the in-flight response flushes before the swap.","required":true}}
