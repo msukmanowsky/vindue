@@ -6,7 +6,7 @@ on pushes to `main` touching `website/**`, only after the `check` job
 passes (docs never publish from a red commit).
 
 ```sh
-npm install
+npm install      # Node 22 (matches CI)
 npm start        # local dev server with hot reload
 npm run build    # static build into build/
 ```
