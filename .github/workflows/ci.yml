@@ -4,9 +4,35 @@ on:
   pull_request:
   push:
     branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
+  # Path awareness keeps docs-only pushes off the ~15-minute cargo gate and
+  # app-only pushes off a needless site rebuild/redeploy. Workflow changes
+  # count as "app" (they match '!website/**') so CI validates itself.
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      app: ${{ steps.filter.outputs.app }}
+      website: ${{ steps.filter.outputs.website }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        id: filter
+        with:
+          filters: |
+            website:
+              - 'website/**'
+            app:
+              - '!website/**'
+
   check:
+    needs: changes
+    if: needs.changes.outputs.app == 'true' || github.event_name == 'workflow_dispatch'
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -53,3 +79,69 @@ jobs:
             echo "::error::Generated API docs are stale — run 'npm run docs:all' and commit the result."
             exit 1
           fi
+
+  website:
+    needs: [changes, check]
+    # The site only builds/deploys AFTER `check` passes: a red drift gate
+    # means code and committed docs disagree, and that state must never
+    # publish. `always()` + explicit results because `check` legitimately
+    # SKIPS on website-only pushes (skipped needs would otherwise skip this).
+    if: >
+      always() &&
+      (needs.changes.outputs.website == 'true' || github.event_name == 'workflow_dispatch') &&
+      (needs.check.result == 'success' || needs.check.result == 'skipped')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: website/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: website
+
+      # MDX drift gate: the endpoint pages are generated from the committed
+      # OpenAPI spec. Regenerate and fail on any diff — deploys can't ship
+      # reference pages that diverge from the spec (and thus the code).
+      - name: Render endpoint pages + MDX drift gate
+        run: |
+          npm run clean-api-docs -- vindue
+          npm run gen-api-docs -- vindue
+          if ! git diff --exit-code -- docs/reference/http-api; then
+            echo "::error::Generated API reference pages are stale — run 'npm run docs:all' and commit the result."
+            exit 1
+          fi
+        working-directory: website
+
+      - name: Build site
+        run: npm run build
+        working-directory: website
+
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5
+
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3
+        with:
+          path: website/build
+
+  deploy:
+    needs: website
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4
