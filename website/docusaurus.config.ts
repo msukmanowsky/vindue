@@ -11,9 +11,11 @@ const config: Config = {
     v4: true,
   },
 
-  // Custom domain on GitHub Pages (DNS: apex A records → GitHub's IPs;
-  // Pages setting + static/CNAME below declare the domain). GitHub 301s the
-  // old msukmanowsky.github.io/vindue/* paths here, prefix stripped.
+  // Custom domain on GitHub Pages (DNS: apex A/AAAA → GitHub's IPs, www →
+  // CNAME msukmanowsky.github.io; the domain itself is declared in repo
+  // Settings → Pages — for Actions-published sites no CNAME file is used).
+  // GitHub 301s the old msukmanowsky.github.io/vindue/* paths here, prefix
+  // stripped.
   url: 'https://vindue.app',
   baseUrl: '/',
 
