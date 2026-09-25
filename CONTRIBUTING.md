@@ -91,6 +91,19 @@ Config lives at `~/Library/Application Support/com.oddinteractive.vindue/config.
 and the TS default are pinned to the same shape from both directions — see
 `src/store.test.ts` and the `default_config_is_the_documented_shape` Rust test.
 
+## Commit messages
+
+Subjects take the form `<type>: <summary>` — lowercase type, imperative
+summary:
+
+- `feature:` — new user-facing capability
+- `bug:` — fix for broken behavior
+- `improvement:` — existing behavior made better (UX, performance, docs)
+- `chore:` — everything else: CI/CD, dependencies, release mechanics, repo
+  housekeeping
+
+The body (when there is one) explains *why*, not *what*.
+
 ## Pull requests
 
 - Small, focused PRs; describe the "why" in the description.

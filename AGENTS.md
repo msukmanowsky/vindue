@@ -80,3 +80,5 @@ parses `tauri.conf.json` in seconds.
   converted 2026-09-25; keep new ones bracketed.
 - `RELEASE_CHECKLIST.md` is a private working doc (gitignored) — never
   reference it from tracked files.
+- Commit subjects use the prefix convention `feature:` / `bug:` /
+  `improvement:` / `chore:` (defined in CONTRIBUTING.md → Commit messages).
