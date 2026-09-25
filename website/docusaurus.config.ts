@@ -4,7 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 
 const config: Config = {
   title: 'Vindue',
-  tagline: 'Grid window tiling for macOS — drivable by scripts and AI',
+  tagline: 'Grid window tiling for macOS — free, open source, programmable by you or AI',
   favicon: 'img/favicon.png',
 
   future: {

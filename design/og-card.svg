@@ -34,6 +34,6 @@
   </g>
   <text x="400" y="290" font-family="Avenir Next" font-weight="bold" font-size="112" fill="#ffffff">Vindue</text>
   <text x="402" y="368" font-family="Avenir Next" font-weight="500" font-size="36" fill="#b9c3d4">Grid window tiling for macOS —</text>
-  <text x="402" y="416" font-family="Avenir Next" font-weight="500" font-size="36" fill="#b9c3d4">drivable by scripts and AI</text>
-  <text x="110" y="560" font-family="Avenir Next" font-weight="500" font-size="26" fill="#7f8a9b">Free &amp; open source (MIT) · Apple Silicon + Intel · vindue.app</text>
+  <text x="402" y="416" font-family="Avenir Next" font-weight="500" font-size="36" fill="#b9c3d4">programmable by you or AI</text>
+  <text x="110" y="560" font-family="Avenir Next" font-weight="600" font-size="28" fill="#9aa5b7">100% free &amp; open source (MIT) · Apple Silicon + Intel · vindue.app</text>
 </svg>

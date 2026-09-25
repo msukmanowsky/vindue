@@ -26,8 +26,8 @@ function HomepageHeader() {
           </Link>
         </div>
         <p className={styles.heroNote}>
-          Free &amp; open source (MIT) · Apple Silicon + Intel · menu-bar app,
-          no Dock icon · no telemetry, everything stays local
+          Apple Silicon + Intel · menu-bar app, no Dock icon · no telemetry,
+          everything stays local
         </p>
         <img
           className={styles.heroDemo}
@@ -96,7 +96,7 @@ export default function Home(): React.ReactNode {
   return (
     <Layout
       title="Grid window tiling for macOS"
-      description="Vindue is an open-source grid window tiler for macOS with a built-in HTTP API and MCP server, so scripts and AI clients can drive window management.">
+      description="Vindue is a free, open-source grid window tiler for macOS with a built-in HTTP API and MCP server, so scripts and AI clients can drive window management.">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

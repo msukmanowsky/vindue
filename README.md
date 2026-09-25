@@ -4,7 +4,7 @@
 
 # Vindue
 
-**Grid window tiling for macOS — the Divvy drag-a-grid interaction, drivable by scripts and AI.**
+**Free, open-source grid window tiling for macOS — the Divvy drag-a-grid interaction, programmable by you or AI.**
 
 [![CI](https://github.com/msukmanowsky/vindue/actions/workflows/ci.yml/badge.svg)](https://github.com/msukmanowsky/vindue/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
@@ -43,7 +43,7 @@ target live, and the header retargets another app without dismissing.
   identical twins); display-bound shortcuts → [docs](https://vindue.app/docs/guide/multi-monitor)
 - **Settings** — schema-validated form + raw-JSON views of config.json; grid
   resizes rescale saved shortcuts proportionally → [docs](https://vindue.app/docs/guide/settings)
-- **Scriptable + AI-drivable** — loopback HTTP API and an MCP server on one
+- **Programmable by you or AI** — loopback HTTP API and an MCP server on one
   port (below)
 
 ## Install
