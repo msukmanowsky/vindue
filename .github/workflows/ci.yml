@@ -9,6 +9,14 @@ on:
 permissions:
   contents: read
 
+# Same-ref runs supersede: a newer push (or a dispatch over an in-flight
+# push run) cancels the older one instead of double-billing the macOS
+# runner. The deploy job keeps its own job-level `pages` group so Pages
+# deploys stay serialized independently.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   # Path awareness keeps docs-only pushes off the ~15-minute cargo gate and
   # app-only pushes off a needless site rebuild/redeploy. Workflow changes
