@@ -44,7 +44,7 @@ target live, and the header retargets another app without dismissing.
 - **Settings** — schema-validated form + raw-JSON views of config.json; grid
   resizes rescale saved shortcuts proportionally → [docs](https://vindue.app/docs/guide/settings)
 - **Programmable by you or AI** — loopback HTTP API and an MCP server on one
-  port (below)
+  port → [docs](https://vindue.app/docs/guide/automating)
 
 ## Install
 
@@ -84,43 +84,6 @@ npm run tauri build -- --debug   # or build the .app
 
 Requirements and the contributor guide: [CONTRIBUTING.md](CONTRIBUTING.md).
 
-## HTTP API
-
-With `api.enabled` (the default), a control API serves on
-`http://127.0.0.1:47725` — REST for scripts and humans, MCP for AI clients,
-one server. **No auth, by design**: loopback-only bind, `Host` allowlist
-(DNS-rebinding defense), and rejection of any request carrying `Origin` or
-`Sec-Fetch-Site` — browsers always attach those, curl/scripts/MCP clients
-never do, so a web page you visit cannot drive your windows.
-([SECURITY.md](SECURITY.md); pinned by tests in `src-tauri/src/api.rs`.)
-
-```sh
-curl -s 127.0.0.1:47725/api/v1/state | jq .
-curl -s -X POST 127.0.0.1:47725/api/v1/tile -d '{"preset":"left_half"}'
-```
-
-14 endpoints — state, tile (9 presets or explicit cells), config CRUD,
-shortcut CRUD, monitors, apps, target, and the server's own live OpenAPI spec
-→ **[full reference](https://vindue.app/docs/reference/http-api)** ·
-[scripting recipes](https://vindue.app/docs/guide/automating)
-
-## MCP
-
-The same server speaks the [Model Context Protocol](https://modelcontextprotocol.io)
-at `/mcp` (streamable HTTP, official MCP Rust SDK) — 12 tools for Claude Code,
-Claude Desktop, or any MCP client: tile windows, manage shortcuts, tune the
-grid, list monitors and apps. One implementation, two protocols: every tool
-delegates to the same handler functions as REST, and clients discover
-everything live (`tools/list`, plus usage instructions in the `initialize`
-response).
-
-```sh
-claude mcp add --transport http vindue http://127.0.0.1:47725/mcp
-```
-
-→ **[MCP reference](https://vindue.app/docs/reference/mcp)** ·
-[tutorial: automate with scripts or AI](https://vindue.app/docs/guide/automating)
-
 ## Commands
 
 ```sh
@@ -140,17 +103,6 @@ The TS and Rust implementations of the shared logic (validation, rescale,
 rect math, presets, monitor labels/resolution) are pinned to each other by
 golden vectors in `fixtures/*.json` — both suites consume every case, so
 drift on either side fails the build.
-
-## Known limitations (deliberate)
-
-- macOS only — Windows & Linux ports are on the [roadmap](https://vindue.app/docs/roadmap)
-- Shortcuts are *local* (panel must be open) — *global* named shortcuts are a later phase
-- No live resize-preview rect beyond the target outline (deferred; no `macOSPrivateApi`, all public APIs)
-- Fullscreen-Space apps and apps that don't expose AX windows can't be resized
-- Mixed-DPI multi-monitor: outline/placement are computed per-monitor but not yet torture-tested
-- Monitor identity is name+index — rearranging displays in System Settings can soften a binding to index-fallback (footer flags it)
-- The control API has no auth token — loopback bind + Host allowlist + browser-request rejection are the whole model (fine for local single-user; anything running as you can already do all of this)
-- Config schema is single-revision (`version: 1`) — on mismatch the config reseeds to defaults; `seed_config` marks the seam where migrations will go
 
 ## Repository layout
 
