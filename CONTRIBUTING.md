@@ -26,17 +26,18 @@ Privacy & Security → Accessibility). One caveat: **a terminal-spawned dev
 binary can't hold the grant** — `tauri dev` is fine for UI/logic iteration,
 but TCC keys terminal-spawned processes by codesign identity, which never
 matches the path record System Settings creates. For Accessibility-dependent
-work (moving windows), launch the binary outside a terminal:
+work (moving windows), use the launchd-based dev loop:
 
-- double-click `src-tauri/target/debug/vindue` in Finder, or
-- run it under a one-shot LaunchAgent (`ProgramArguments` → the binary,
-  `RunAtLoad`; `launchctl bootstrap gui/$(id -u) <plist>`), or
-- `npm run tauri build -- --debug` and run the bundled `.app`.
+```sh
+npm run dev:ax           # vite + debug binary under a LaunchAgent; prints axTrusted
+npm run dev:ax:restart   # after Rust changes: cargo build + relaunch
+npm run dev:ax:down      # tear everything down
+```
 
-Serve the UI with `npm run dev` before launching the binary (dev builds load
-the frontend from `localhost:1420`). Ad-hoc signing mints a new signature on
-every rebuild, so expect one remove + re-add of the binary in Accessibility
-after each rebuild — in these launch forms the grant sticks.
+(Finder-launching `src-tauri/target/debug/vindue` or a bundled debug build
+works too — anything but a terminal spawn.) Ad-hoc signing mints a new
+signature on every rebuild, so expect one remove + re-add of the binary in
+Accessibility after each rebuild — in these launch forms the grant sticks.
 
 ## Running tests
 

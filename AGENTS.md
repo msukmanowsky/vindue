@@ -67,15 +67,12 @@ parses `tauri.conf.json` in seconds.
   Settings path record never matches and re-adds don't help (proven via
   tccd logs 2026-09-28 — any terminal, not a specific one). Finder/launchd-
   spawned binaries resolve by path and grants work. AX-correct dev loop:
-  vite first (`npm run dev` — booting the app before vite gives a blank
-  panel), then run `target/debug/vindue` under a one-shot LaunchAgent
-  (`ProgramArguments` → binary, `RunAtLoad`):
-  `launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/<label>.plist`;
-  after Rust changes `(cd src-tauri && cargo build) && launchctl kickstart
-  -k gui/$(id -u)/<label>`; teardown `launchctl bootout gui/$(id -u)/<label>`
-  + rm the plist. Dev builds are ad-hoc signed: every rebuild mints a new
-  cdhash → may need one Accessibility re-add (remove + add by path); it
-  sticks in launchd/Finder form. Signed releases have a stable identity.
+  `npm run dev:ax` (vite + the debug binary under a one-shot LaunchAgent;
+  prints `axTrusted`), `npm run dev:ax:restart` after Rust changes,
+  `npm run dev:ax:down` to tear down — all via `scripts/dev-ax.sh`.
+  Dev builds are ad-hoc signed: every rebuild mints a new cdhash → may
+  need one Accessibility re-add (remove + add by path); it sticks in
+  launchd/Finder form. Signed releases have a stable identity.
 - Inspect a running app: `curl -s 127.0.0.1:47725/api/v1/state | jq` (includes
   `axTrusted`). Config: `~/Library/Application Support/com.oddinteractive.vindue/config.json`;
   logs: `~/Library/Logs/com.oddinteractive.vindue/Vindue.log`.

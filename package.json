@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "license": "MIT",
-  "description": "Grid window tiling for macOS — drivable by scripts and AI",
+  "description": "Grid window tiling for macOS — free, open source, programmable by you or AI",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/msukmanowsky/vindue.git"
@@ -26,6 +26,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:ax": "bash scripts/dev-ax.sh up",
+    "dev:ax:restart": "bash scripts/dev-ax.sh restart",
+    "dev:ax:down": "bash scripts/dev-ax.sh down",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest run",

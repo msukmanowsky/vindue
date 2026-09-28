@@ -85,9 +85,9 @@ npm run tauri build -- --debug   # or build the .app
 `tauri dev` is fine for UI/logic iteration, but a terminal-spawned dev
 binary can't hold the macOS Accessibility grant — TCC keys it by codesign
 identity, which never matches the path record System Settings creates. For
-AX-dependent work, launch `src-tauri/target/debug/vindue` from Finder or a
-one-shot LaunchAgent (with `npm run dev` serving the UI), or run a bundled
-debug build.
+AX-dependent work use `npm run dev:ax` (runs the debug binary under
+launchd; `dev:ax:restart` after Rust changes, `dev:ax:down` to tear down),
+or run a bundled debug build.
 
 Requirements and the contributor guide: [CONTRIBUTING.md](CONTRIBUTING.md).
 
