@@ -821,10 +821,15 @@ fn apply_autostart(app: &tauri::AppHandle, want: bool) {
     use tauri_plugin_autostart::ManagerExt;
     let mgr = app.autolaunch();
     let enabled = mgr.is_enabled().unwrap_or(false);
-    let res = match (want, enabled) {
-        (true, false) => mgr.enable().map_err(|e| e.to_string()),
-        (false, true) => mgr.disable().map_err(|e| e.to_string()),
-        _ => Ok(()),
+    // Always re-register when wanted (enable() rewrites the plist with the
+    // current exe path): heals stale paths after the app moves, a reinstall,
+    // or a dev build having registered first.
+    let res = if want {
+        mgr.enable().map_err(|e| e.to_string())
+    } else if enabled {
+        mgr.disable().map_err(|e| e.to_string())
+    } else {
+        Ok(())
     };
     if let Err(e) = res {
         log::warn!("launch-at-login toggle failed (want={want}): {e}");
