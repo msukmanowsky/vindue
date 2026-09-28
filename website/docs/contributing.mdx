@@ -20,8 +20,12 @@ npm run tauri dev
 ```
 
 Requires macOS, Node.js 20+, Rust (stable), Xcode command line tools, and the
-Accessibility grant for the dev binary (the app will point you at the exact
-file).
+Accessibility grant (the app will point you at the exact file). One caveat: a
+terminal-spawned `tauri dev` binary can't hold the grant — for
+Accessibility-dependent work, launch `src-tauri/target/debug/vindue` from
+Finder or a one-shot LaunchAgent (with `npm run dev` serving the UI), or use a
+bundled debug build. Details in
+[CONTRIBUTING.md](https://github.com/msukmanowsky/vindue/blob/main/CONTRIBUTING.md).
 
 ## Tests — run them all
 
