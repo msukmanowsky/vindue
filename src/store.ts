@@ -24,7 +24,7 @@ export interface AppConfig {
 }
 
 export const DEFAULT_CONFIG: AppConfig = {
-  general: { autostart: false },
+  general: { autostart: true },
   grid: {
     rows: 6,
     cols: 6,

@@ -9,7 +9,12 @@ import { appConfigDir, homeDir } from "@tauri-apps/api/path";
 import { openPath } from "@tauri-apps/plugin-opener";
 import { Columns3, GalleryHorizontal, GalleryVertical, Monitor as MonitorIcon, Rows3 } from "lucide-react";
 import { validateConfig } from "./configSchema";
-import { readRawConfig, type AppConfig, type PanelAssignment } from "./store";
+import {
+  DEFAULT_CONFIG,
+  readRawConfig,
+  type AppConfig,
+  type PanelAssignment,
+} from "./store";
 import { apiInfo, commitConfig, configStamp, monitorNames, reloadConfig, type ApiInfo } from "./bindings";
 import {
   rescaleSelection,
@@ -31,9 +36,8 @@ import "./styles.css";
 function toConfig(valid: Record<string, unknown>): AppConfig {
   return {
     general:
-      (valid.general as AppConfig["general"] | undefined) ?? {
-        autostart: false,
-      },
+      (valid.general as AppConfig["general"] | undefined) ??
+      DEFAULT_CONFIG.general,
     grid: valid.grid as AppConfig["grid"],
     keybindings: valid.keybindings as AppConfig["keybindings"],
     shortcuts: valid.shortcuts as AppConfig["shortcuts"],

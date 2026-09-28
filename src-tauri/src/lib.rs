@@ -1007,14 +1007,14 @@ pub fn run() {
             api::apply_server_config(app.handle(), Some(api_cfg));
 
             // Launch-at-login: reconcile system state to the stored setting
-            // (absent in pre-0.1.1 config files → false).
+            // (absent in pre-0.1.1 config files → on, matching the default).
             let autostart = app
                 .store(CONFIG_FILE)
                 .ok()
                 .and_then(|s| s.get("general"))
                 .and_then(|v| serde_json::from_value::<config::GeneralCfg>(v).ok())
                 .map(|g| g.autostart)
-                .unwrap_or(false);
+                .unwrap_or(true);
             apply_autostart(app.handle(), autostart);
 
             Ok(())

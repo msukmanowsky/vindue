@@ -95,10 +95,20 @@ pub struct ApiCfg {
     pub enabled: bool,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize)]
 pub struct GeneralCfg {
-    #[serde(default)]
+    #[serde(default = "default_true")]
     pub autostart: bool,
+}
+
+fn default_true() -> bool {
+    true
+}
+
+impl Default for GeneralCfg {
+    fn default() -> Self {
+        Self { autostart: true }
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
@@ -138,7 +148,7 @@ pub fn default_config_json() -> Value {
         "keybindings": { "openPanel": DEFAULT_HOTKEY },
         "shortcuts": { "assignment": "pinned", "keys": {} },
         "api": { "port": DEFAULT_API_PORT, "enabled": true },
-        "general": { "autostart": false }
+        "general": { "autostart": true }
     })
 }
 
@@ -656,7 +666,7 @@ mod tests {
             d["api"],
             json!({ "port": DEFAULT_API_PORT, "enabled": true })
         );
-        assert_eq!(d["general"], json!({ "autostart": false }));
+        assert_eq!(d["general"], json!({ "autostart": true }));
     }
 
     #[test]
