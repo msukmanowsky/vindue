@@ -46,6 +46,12 @@ describe("Rust seed parity", () => {
     );
   });
 
+  it("seeds the same general default", () => {
+    expect(rust).toContain(
+      `"general": { "autostart": ${DEFAULT_CONFIG.general.autostart} }`,
+    );
+  });
+
   it("seeds schema version 1", () => {
     expect(rust).toContain("pub const CONFIG_VERSION: i64 = 1;");
     expect(rust).toContain('"version": CONFIG_VERSION,');

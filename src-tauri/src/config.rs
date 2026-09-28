@@ -95,6 +95,12 @@ pub struct ApiCfg {
     pub enabled: bool,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Serialize, Deserialize, Default)]
+pub struct GeneralCfg {
+    #[serde(default)]
+    pub autostart: bool,
+}
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct Config {
@@ -102,6 +108,11 @@ pub struct Config {
     pub keybindings: KeybindingsCfg,
     pub shortcuts: ShortcutsCfg,
     pub api: ApiCfg,
+    /// Added after 0.1.0 shipped: config files written by 0.1.0 lack it, so
+    /// it deserializes (and validates) as absent-with-defaults rather than
+    /// forcing a reseed. Present in every freshly seeded/saved config.
+    #[serde(default)]
+    pub general: GeneralCfg,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq)]
@@ -126,7 +137,8 @@ pub fn default_config_json() -> Value {
         },
         "keybindings": { "openPanel": DEFAULT_HOTKEY },
         "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": DEFAULT_API_PORT, "enabled": true }
+        "api": { "port": DEFAULT_API_PORT, "enabled": true },
+        "general": { "autostart": false }
     })
 }
 
@@ -210,11 +222,14 @@ pub fn validate_config(v: &Value) -> Result<(), Vec<String>> {
     for k in root.keys() {
         if !matches!(
             k.as_str(),
-            "version" | "grid" | "keybindings" | "shortcuts" | "api"
+            "version" | "grid" | "keybindings" | "shortcuts" | "api" | "general"
         ) {
             errs.push(format!("config has unknown key \"{k}\""));
         }
     }
+    // `general` is deliberately NOT in the required list: configs written by
+    // 0.1.0 predate the section, and consumers default it — requiring it
+    // would reject (and reseed) those files on upgrade.
     for k in ["version", "grid", "keybindings", "shortcuts", "api"] {
         if !root.contains_key(k) {
             errs.push(format!("config is missing \"{k}\""));
@@ -267,6 +282,17 @@ pub fn validate_config(v: &Value) -> Result<(), Vec<String>> {
             match m.get("openPanel") {
                 Some(Value::String(_)) => {}
                 _ => errs.push("keybindings.openPanel must be a string".into()),
+            }
+        }
+    }
+
+    // general — optional (see the required-keys comment); fully validated
+    // when present.
+    if let Some(gen) = root.get("general") {
+        if let Some(m) = check_obj(gen, &["autostart"], "general", &mut errs) {
+            match m.get("autostart") {
+                Some(Value::Bool(_)) => {}
+                _ => errs.push("general.autostart must be a boolean".into()),
             }
         }
     }
@@ -630,6 +656,7 @@ mod tests {
             d["api"],
             json!({ "port": DEFAULT_API_PORT, "enabled": true })
         );
+        assert_eq!(d["general"], json!({ "autostart": false }));
     }
 
     #[test]

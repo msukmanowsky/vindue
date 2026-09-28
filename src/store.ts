@@ -1,10 +1,10 @@
 // Config persistence via the official store plugin. The canonical file lives at:
 // ~/Library/Application Support/com.oddinteractive.vindue/config.json
 // Edit it in the Settings window (schema-validated) or by hand, then relaunch.
-// Top-level keys mirror the Settings UI sections 1:1: grid, keybindings,
-// shortcuts, api. The Rust seed (src-tauri/src/config.rs) is pinned to this
-// shape from both directions — see src/store.test.ts and the Rust
-// `default_config_is_the_documented_shape` test.
+// Top-level keys mirror the Settings UI sections 1:1: general, grid,
+// keybindings, shortcuts, api. The Rust seed (src-tauri/src/config.rs) is
+// pinned to this shape from both directions — see src/store.test.ts and the
+// Rust `default_config_is_the_documented_shape` test.
 import { load } from "@tauri-apps/plugin-store";
 import type { GridConfig } from "./geometry";
 import type { ShortcutDef } from "./shortcuts";
@@ -13,6 +13,7 @@ import type { ShortcutDef } from "./shortcuts";
 export type PanelAssignment = "pinned" | "relative";
 
 export interface AppConfig {
+  general: { autostart: boolean };
   grid: GridConfig;
   keybindings: { openPanel: string };
   shortcuts: {
@@ -23,6 +24,7 @@ export interface AppConfig {
 }
 
 export const DEFAULT_CONFIG: AppConfig = {
+  general: { autostart: false },
   grid: {
     rows: 6,
     cols: 6,
@@ -41,13 +43,15 @@ async function openStore() {
 export async function loadConfig(): Promise<AppConfig> {
   try {
     const store = await openStore();
-    const [grid, keybindings, shortcuts, api] = await Promise.all([
+    const [general, grid, keybindings, shortcuts, api] = await Promise.all([
+      store.get<AppConfig["general"]>("general"),
       store.get<GridConfig>("grid"),
       store.get<AppConfig["keybindings"]>("keybindings"),
       store.get<AppConfig["shortcuts"]>("shortcuts"),
       store.get<AppConfig["api"]>("api"),
     ]);
     return {
+      general: general ?? DEFAULT_CONFIG.general,
       grid: grid ?? DEFAULT_CONFIG.grid,
       keybindings: keybindings ?? DEFAULT_CONFIG.keybindings,
       shortcuts: shortcuts ?? DEFAULT_CONFIG.shortcuts,

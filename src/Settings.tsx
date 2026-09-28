@@ -30,6 +30,10 @@ import "./styles.css";
 
 function toConfig(valid: Record<string, unknown>): AppConfig {
   return {
+    general:
+      (valid.general as AppConfig["general"] | undefined) ?? {
+        autostart: false,
+      },
     grid: valid.grid as AppConfig["grid"],
     keybindings: valid.keybindings as AppConfig["keybindings"],
     shortcuts: valid.shortcuts as AppConfig["shortcuts"],
@@ -611,6 +615,33 @@ export default function Settings() {
 
       {view === "form" && form && (
         <div className="form">
+          <section className="settings-section">
+            <div className="section-head">
+              <h2>General</h2>
+              <p className="hint">
+                Startup behavior. Launching at login registers Vindue as a
+                background item — macOS lists it under System Settings →
+                General → Login Items.
+              </p>
+            </div>
+            <div className="section-body">
+              <div className="row">
+                <label className="field">
+                  <span>Launch Vindue at login</span>
+                  <input
+                    type="checkbox"
+                    checked={form.general.autostart}
+                    onChange={(e) =>
+                      patch({ general: { autostart: e.target.checked } })
+                    }
+                  />
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <hr className="divider" />
+
           <section className="settings-section">
             <div className="section-head">
               <h2>Grid</h2>

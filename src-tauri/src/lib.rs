@@ -378,6 +378,9 @@ fn commit_config_inner(
     let old_api = store
         .get("api")
         .and_then(|v| serde_json::from_value::<config::ApiCfg>(v).ok());
+    let old_general = store
+        .get("general")
+        .and_then(|v| serde_json::from_value::<config::GeneralCfg>(v).ok());
     for (k, v) in config_value
         .as_object()
         .expect("validated config is an object")
@@ -399,6 +402,17 @@ fn commit_config_inner(
     let new_api = serde_json::from_value::<config::ApiCfg>(config_value["api"].clone()).ok();
     if new_api != old_api {
         api::apply_server_config(app, new_api);
+    }
+
+    // Launch-at-login: apply only when the section is present (it's optional
+    // for pre-0.1.1 config files) and actually changed.
+    if let Some(new_general) = config_value
+        .get("general")
+        .and_then(|v| serde_json::from_value::<config::GeneralCfg>(v.clone()).ok())
+    {
+        if Some(new_general) != old_general {
+            apply_autostart(app, new_general.autostart);
+        }
     }
     Ok(())
 }
@@ -798,6 +812,25 @@ fn open_settings_window(app: &tauri::AppHandle) {
 
 // ---------- setup ----------
 
+/// Reconcile the system launch-at-login state to config.json (the single
+/// source of truth). Called at startup — the LaunchAgent may have been
+/// removed by hand, or the app reinstalled — and on every config save that
+/// changes `general.autostart`. Failures are logged, not fatal: a broken
+/// toggle shouldn't take down config saves or launch.
+fn apply_autostart(app: &tauri::AppHandle, want: bool) {
+    use tauri_plugin_autostart::ManagerExt;
+    let mgr = app.autolaunch();
+    let enabled = mgr.is_enabled().unwrap_or(false);
+    let res = match (want, enabled) {
+        (true, false) => mgr.enable().map_err(|e| e.to_string()),
+        (false, true) => mgr.disable().map_err(|e| e.to_string()),
+        _ => Ok(()),
+    };
+    if let Err(e) = res {
+        log::warn!("launch-at-login toggle failed (want={want}): {e}");
+    }
+}
+
 fn seed_config(app: &tauri::AppHandle) -> Result<String, Box<dyn std::error::Error>> {
     let store = app.store(CONFIG_FILE)?;
     let version = store.get("version").and_then(|v| v.as_i64()).unwrap_or(0);
@@ -901,6 +934,14 @@ pub fn run() {
         }))
         .plugin(tauri_plugin_store::Builder::new().build())
         .plugin(tauri_plugin_opener::init())
+        // Launch-at-login via a LaunchAgent plist (~/Library/LaunchAgents) —
+        // macOS lists it under System Settings → General → Login Items.
+        // Config-driven only (no tray toggle): config.json is the single
+        // source of truth; apply_autostart reconciles system state to it.
+        .plugin(tauri_plugin_autostart::init(
+            tauri_plugin_autostart::MacosLauncher::LaunchAgent,
+            None,
+        ))
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
                 .with_handler(|app, _shortcut, event| {
@@ -959,6 +1000,17 @@ pub fn run() {
                     enabled: true,
                 });
             api::apply_server_config(app.handle(), Some(api_cfg));
+
+            // Launch-at-login: reconcile system state to the stored setting
+            // (absent in pre-0.1.1 config files → false).
+            let autostart = app
+                .store(CONFIG_FILE)
+                .ok()
+                .and_then(|s| s.get("general"))
+                .and_then(|v| serde_json::from_value::<config::GeneralCfg>(v).ok())
+                .map(|g| g.autostart)
+                .unwrap_or(false);
+            apply_autostart(app.handle(), autostart);
 
             Ok(())
         })

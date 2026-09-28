@@ -6,10 +6,31 @@
       "valid": true,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -17,17 +38,65 @@
       "valid": true,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 10, "height": 20 }, "screenMargins": { "top": 1, "right": 2, "bottom": 3, "left": 4 } },
-        "keybindings": { "openPanel": "Cmd+Shift+Space" },
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 10,
+            "height": 20
+          },
+          "screenMargins": {
+            "top": 1,
+            "right": 2,
+            "bottom": 3,
+            "left": 4
+          }
+        },
+        "keybindings": {
+          "openPanel": "Cmd+Shift+Space"
+        },
         "shortcuts": {
           "assignment": "relative",
           "keys": {
-            "Digit1": { "monitor": null, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } },
-            "Backquote": { "monitor": { "name": "DELL U2720Q (left)", "index": 1 }, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 5 } },
-            "Semicolon": { "monitor": { "name": null, "index": 0 }, "selection": { "startRow": 2, "endRow": 3, "startCol": 1, "endCol": 4 } }
+            "Digit1": {
+              "monitor": null,
+              "selection": {
+                "startRow": 0,
+                "endRow": 5,
+                "startCol": 0,
+                "endCol": 2
+              }
+            },
+            "Backquote": {
+              "monitor": {
+                "name": "DELL U2720Q (left)",
+                "index": 1
+              },
+              "selection": {
+                "startRow": 0,
+                "endRow": 5,
+                "startCol": 0,
+                "endCol": 5
+              }
+            },
+            "Semicolon": {
+              "monitor": {
+                "name": null,
+                "index": 0
+              },
+              "selection": {
+                "startRow": 2,
+                "endRow": 3,
+                "startCol": 1,
+                "endCol": 4
+              }
+            }
           }
         },
-        "api": { "port": 47725, "enabled": false }
+        "api": {
+          "port": 47725,
+          "enabled": false
+        }
       }
     },
     {
@@ -35,10 +104,31 @@
       "valid": true,
       "config": {
         "version": 1,
-        "grid": { "rows": 12, "cols": 12, "windowGap": { "width": 300, "height": 300 }, "screenMargins": { "top": 300, "right": 300, "bottom": 300, "left": 300 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 12,
+          "cols": 12,
+          "windowGap": {
+            "width": 300,
+            "height": 300
+          },
+          "screenMargins": {
+            "top": 300,
+            "right": 300,
+            "bottom": 300,
+            "left": 300
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -46,10 +136,31 @@
       "valid": true,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 1024, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 1024,
+          "enabled": true
+        }
       }
     },
     {
@@ -57,10 +168,31 @@
       "valid": true,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 65535, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 65535,
+          "enabled": true
+        }
       }
     },
     {
@@ -68,10 +200,31 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 47725, "enabled": true },
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        },
         "bogus": 1
       }
     },
@@ -81,10 +234,31 @@
       "config": {
         "version": 1,
         "hotkey": "",
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -92,19 +266,59 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
       "name": "invalid missing version",
       "valid": false,
       "config": {
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -112,10 +326,31 @@
       "valid": false,
       "config": {
         "version": "1",
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -123,10 +358,31 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 13, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 13,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -134,10 +390,31 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 0, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 0,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -145,10 +422,31 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 301, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 301,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -156,10 +454,31 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": -1, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": -1,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -167,10 +486,31 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "bogus", "keys": {} },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "bogus",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -178,10 +518,41 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": { "1": { "monitor": null, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } } } },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {
+            "1": {
+              "monitor": null,
+              "selection": {
+                "startRow": 0,
+                "endRow": 5,
+                "startCol": 0,
+                "endCol": 2
+              }
+            }
+          }
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -189,10 +560,41 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": { "KeyQ": { "monitor": null, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } } } },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {
+            "KeyQ": {
+              "monitor": null,
+              "selection": {
+                "startRow": 0,
+                "endRow": 5,
+                "startCol": 0,
+                "endCol": 2
+              }
+            }
+          }
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -200,10 +602,38 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": { "Digit1": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } } },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {
+            "Digit1": {
+              "startRow": 0,
+              "endRow": 5,
+              "startCol": 0,
+              "endCol": 2
+            }
+          }
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -211,10 +641,45 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": { "Digit1": { "monitor": { "name": "X", "index": 0, "id": "abc" }, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } } } },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {
+            "Digit1": {
+              "monitor": {
+                "name": "X",
+                "index": 0,
+                "id": "abc"
+              },
+              "selection": {
+                "startRow": 0,
+                "endRow": 5,
+                "startCol": 0,
+                "endCol": 2
+              }
+            }
+          }
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -222,10 +687,44 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": { "Digit1": { "monitor": { "name": null, "index": -1 }, "selection": { "startRow": 0, "endRow": 5, "startCol": 0, "endCol": 2 } } } },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {
+            "Digit1": {
+              "monitor": {
+                "name": null,
+                "index": -1
+              },
+              "selection": {
+                "startRow": 0,
+                "endRow": 5,
+                "startCol": 0,
+                "endCol": 2
+              }
+            }
+          }
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -233,10 +732,41 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": { "Digit1": { "monitor": null, "selection": { "startRow": 0, "endRow": 7, "startCol": 0, "endCol": 2 } } } },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {
+            "Digit1": {
+              "monitor": null,
+              "selection": {
+                "startRow": 0,
+                "endRow": 7,
+                "startCol": 0,
+                "endCol": 2
+              }
+            }
+          }
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -244,10 +774,41 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": { "Digit1": { "monitor": null, "selection": { "startRow": 5, "endRow": 0, "startCol": 0, "endCol": 0 } } } },
-        "api": { "port": 47725, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {
+            "Digit1": {
+              "monitor": null,
+              "selection": {
+                "startRow": 5,
+                "endRow": 0,
+                "startCol": 0,
+                "endCol": 0
+              }
+            }
+          }
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        }
       }
     },
     {
@@ -255,10 +816,31 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 1023, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 1023,
+          "enabled": true
+        }
       }
     },
     {
@@ -266,10 +848,31 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} },
-        "api": { "port": 65536, "enabled": true }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 65536,
+          "enabled": true
+        }
       }
     },
     {
@@ -277,9 +880,234 @@
       "valid": false,
       "config": {
         "version": 1,
-        "grid": { "rows": 6, "cols": 6, "windowGap": { "width": 0, "height": 0 }, "screenMargins": { "top": 0, "right": 0, "bottom": 0, "left": 0 } },
-        "keybindings": { "openPanel": "" },
-        "shortcuts": { "assignment": "pinned", "keys": {} }
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        }
+      }
+    },
+    {
+      "name": "valid general autostart on",
+      "valid": true,
+      "config": {
+        "version": 1,
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        },
+        "general": {
+          "autostart": true
+        }
+      }
+    },
+    {
+      "name": "valid general autostart off",
+      "valid": true,
+      "config": {
+        "version": 1,
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        },
+        "general": {
+          "autostart": false
+        }
+      }
+    },
+    {
+      "name": "invalid general.autostart not boolean",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        },
+        "general": {
+          "autostart": "yes"
+        }
+      }
+    },
+    {
+      "name": "invalid general unknown key",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        },
+        "general": {
+          "autostart": false,
+          "bogus": 1
+        }
+      }
+    },
+    {
+      "name": "invalid general missing autostart",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        },
+        "general": {}
+      }
+    },
+    {
+      "name": "invalid general null",
+      "valid": false,
+      "config": {
+        "version": 1,
+        "grid": {
+          "rows": 6,
+          "cols": 6,
+          "windowGap": {
+            "width": 0,
+            "height": 0
+          },
+          "screenMargins": {
+            "top": 0,
+            "right": 0,
+            "bottom": 0,
+            "left": 0
+          }
+        },
+        "keybindings": {
+          "openPanel": ""
+        },
+        "shortcuts": {
+          "assignment": "pinned",
+          "keys": {}
+        },
+        "api": {
+          "port": 47725,
+          "enabled": true
+        },
+        "general": null
       }
     }
   ]

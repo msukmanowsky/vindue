@@ -11,7 +11,7 @@ description: The config.json file — location, shape, and every field.
 Edit it in the [Settings window](../guide/settings) — all changes apply immediately
 (the panel live-reloads on save; hotkey changes re-register live too) — or by
 hand. Top-level keys mirror the Settings UI sections 1:1. Defaults are no
-hotkey, zero gaps/margins, no shortcuts, API on:
+hotkey, zero gaps/margins, no shortcuts, API on, launch-at-login off:
 
 ```json
 {
@@ -36,7 +36,8 @@ hotkey, zero gaps/margins, no shortcuts, API on:
       }
     }
   },
-  "api": { "port": 47725, "enabled": true }
+  "api": { "port": 47725, "enabled": true },
+  "general": { "autostart": false }
 }
 ```
 
@@ -52,6 +53,7 @@ hotkey, zero gaps/margins, no shortcuts, API on:
 | `shortcuts.keys` | Key code → `{ monitor, selection }`. `monitor: null` = relative to the panel's display; otherwise `{ name, index }` of the display it was assigned on (`name` = [canonical label](../guide/multi-monitor#naming-your-displays)). Easiest created via assignment mode in the panel |
 | `api.port` | Loopback server port, 1024–65535 (default 47725) |
 | `api.enabled` | Serve the [HTTP API + MCP](../reference/http-api/index.mdx) at all |
+| `general.autostart` | Launch Vindue at login — registers it as a macOS background item (System Settings → General → Login Items). Default `false` |
 
 Key codes are `KeyboardEvent.code` values (physical positions): `Digit1`,
 `Backquote`, `Minus`, `Semicolon`, … — layout-independent.
@@ -61,6 +63,11 @@ Key codes are `KeyboardEvent.code` values (physical positions): `Digit1`,
 `version` is the schema revision. On a version/shape mismatch the config is
 reseeded to defaults — while the app is pre-1.0 there are no migrations; the
 seed function marks the seam where real migrations go for shipped releases.
+
+Sections added after a release (like `general`, which arrived post-0.1.0) are
+*optional*: a config file lacking them stays valid — the missing section is
+treated as its defaults, and the next Settings save writes it back. Upgrades
+never reseed your settings for an addition.
 
 The Rust seed/validation core and the TypeScript defaults are pinned to this
 exact shape from both directions by tests — see the fixture-parity rule in

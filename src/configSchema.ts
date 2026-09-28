@@ -1,5 +1,5 @@
 // Standardized schema for config.json, enforced with Yup in the Settings UI.
-// Top-level keys mirror the Settings UI sections: grid, keybindings,
+// Top-level keys mirror the Settings UI sections: general, grid, keybindings,
 // shortcuts, api. The Rust port (validate_config in src-tauri/src/config.rs)
 // is pinned to the same accept/reject behavior by fixtures/validate-cases.json
 // — both suites consume it.
@@ -110,6 +110,17 @@ export const configSchema = yup
       })
       .noUnknown()
       .required(),
+    // Added after 0.1.0: config files written before this section existed
+    // lack `general` — absent is valid and consumers default it (parity with
+    // the Rust validator, which also treats it as optional). When present it
+    // must be exactly { autostart: boolean }; null is rejected (object
+    // schemas are non-nullable by default), matching Rust's check_obj.
+    general: yup
+      .object({
+        autostart: yup.boolean().required(),
+      })
+      .noUnknown()
+      .optional(),
   })
   .noUnknown()
   .test(

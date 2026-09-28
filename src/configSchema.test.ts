@@ -184,4 +184,39 @@ describe("configSchema", () => {
     const { keybindings: _kb, ...noKb } = valid;
     await expect(validateConfig(noKb)).rejects.toThrow();
   });
+
+  describe("general section", () => {
+    it("accepts a config without general (pre-0.1.1 files)", async () => {
+      await expect(validateConfig(valid)).resolves.toBeDefined();
+    });
+
+    it("accepts general.autostart booleans", async () => {
+      await expect(
+        validateConfig({ ...valid, general: { autostart: true } }),
+      ).resolves.toBeDefined();
+      await expect(
+        validateConfig({ ...valid, general: { autostart: false } }),
+      ).resolves.toBeDefined();
+    });
+
+    it("rejects a non-boolean autostart", async () => {
+      await expect(
+        validateConfig({ ...valid, general: { autostart: "yes" } }),
+      ).rejects.toThrow();
+    });
+
+    it("rejects unknown general keys", async () => {
+      await expect(
+        validateConfig({ ...valid, general: { autostart: false, bogus: 1 } }),
+      ).rejects.toThrow();
+    });
+
+    it("rejects a null general", async () => {
+      await expect(validateConfig({ ...valid, general: null })).rejects.toThrow();
+    });
+
+    it("rejects general without autostart", async () => {
+      await expect(validateConfig({ ...valid, general: {} })).rejects.toThrow();
+    });
+  });
 });
