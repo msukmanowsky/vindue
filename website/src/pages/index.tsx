@@ -1,5 +1,4 @@
 import clsx from 'clsx';
-import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
 import HomepageFeatures from '@site/src/components/HomepageFeatures';
@@ -19,15 +18,17 @@ function HomepageHeader() {
         </Heading>
         <p className="hero__subtitle">{siteConfig.tagline}</p>
         <div className={styles.buttons}>
-          <Link
-            className="button button--primary button--lg"
-            href="https://github.com/msukmanowsky/vindue/releases/latest/download/Vindue_universal.dmg">
+          <button
+            type="button"
+            className={clsx('button button--primary button--lg', styles.buttonDisabled)}
+            disabled
+            title="Coming soon — the first release is pending Apple signing">
             Download for macOS
-          </Link>
+          </button>
         </div>
         <p className={styles.heroNote}>
-          Apple Silicon + Intel · menu-bar app, no Dock icon · no telemetry,
-          everything stays local
+          Download coming soon · Apple Silicon + Intel · menu-bar app, no
+          Dock icon · no telemetry, everything stays local
         </p>
         <img
           className={styles.heroDemo}

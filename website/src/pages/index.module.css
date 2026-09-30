@@ -19,6 +19,11 @@
   margin-top: 2rem;
 }
 
+.buttonDisabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
 .heroNote {
   margin-top: 1.25rem;
   font-size: 0.9rem;
