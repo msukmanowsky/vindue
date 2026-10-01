@@ -93,6 +93,11 @@ case "${1:-up}" in
       rm -f "$VITE_PID_FILE"
     fi
     echo "torn down (agent + plist removed; vite stopped if this script started it)"
+    if [ -d "/Applications/Vindue.app" ]; then
+      echo "note: while the dev instance ran it reclaimed the login slot (shared"
+      echo "config); launch /Applications/Vindue.app once so logins start the"
+      echo "real app again — a dev binary at login shows a blank panel (no vite)."
+    fi
     ;;
   *)
     echo "usage: $(basename "$0") [up|restart|down]" >&2
